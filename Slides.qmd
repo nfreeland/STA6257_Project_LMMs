@@ -1,0 +1,29 @@
+---
+title: "STA6257_Project_LMMs"
+format: revealjs
+editor: visual
+---
+
+## Introduction
+
+-   Linear Mixed-Effects Models can be used to model correlated data
+    -   Take the form of cross sectional or longitudinal data
+-   Called "mixed" because they simultaneously model fixed and random effects
+    -   fixed effects model average trends
+    -   random effects model the extent to which these trends vary across levels of some grouping factor
+-   Main application for mixed-effect models is in psychology due to the nature of their data and repeated observations across trial participants
+
+## Methods
+
+When you click the **Render** button a document will be generated that includes:
+
+-   Content authored with markdown
+-   Output from executable code
+
+## Code
+
+When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
