@@ -2,6 +2,8 @@
 title: "Linear Mixed Effect Models"
 author: "Nick Freeland, Bernice Green, Gary Marmon"
 date: '`r Sys.Date()`'
+execute:
+  echo: true
 format:
   html:
     toc: true
@@ -13,6 +15,9 @@ link-citations: yes
 #always_allow_html: true # this allows to get PDF with HTML features
 ---
 [Link to presentation ](http://rpubs.com/beg18/LMMs)
+
+[Link to document](https://beg18uwf.github.io/STA6257_Project_LMMs/)
+
 
 ## Introduction
 
