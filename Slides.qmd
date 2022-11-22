@@ -3,8 +3,53 @@ title: "STA6257_Project_LMMs"
 format: revealjs
 editor: visual
 ---
+```{r}
 
-## Introduction
+#| include: false
+
+# loading packages 
+library(tidyverse)
+library(knitr)
+library(ggthemes)
+library(ggrepel)
+library(dslabs)
+library(nflverse)
+library(nflplotR)
+library(kableExtra)
+library(GLMsData)
+library(ggfortify)
+library(gridExtra)
+library(lme4)
+library(lmerTest)
+
+# loading play by play data from the 2021 NFL season
+pbp <- nflreadr::load_pbp(2021)
+
+# team summaries 
+team_sum1 <- data.frame(pbp$game_id, pbp$home_coach, pbp$away_coach, pbp$posteam, pbp$posteam_type, pbp$pass, pbp$rush, pbp$epa, pbp$down, pbp$week, pbp$season_type, pbp$yards_gained, pbp$shotgun, pbp$no_huddle, pbp$yards_after_catch)
+
+team_sum2 <- team_sum1 %>%
+  filter(pbp.rush == 1 | pbp.pass == 1, !is.na(pbp.down)) %>%
+  group_by (pbp.posteam, pbp.posteam_type, pbp.game_id) %>%
+  mutate(coach = ifelse(pbp.posteam_type == 'home',pbp.home_coach,pbp.away_coach)) %>%
+  mutate(opp_coach = ifelse(pbp.posteam_type == 'away',pbp.home_coach,pbp.away_coach)) %>%
+  mutate(home_adv = ifelse(pbp.posteam_type == 'home', 0, 1))%>%
+  summarize(week = first(pbp.week),
+            season_type = first(ifelse(pbp.season_type == 'REG', 0, 1)),
+            home_adv = first(home_adv),
+            coach = first(coach),
+            opp_coach = first(opp_coach),
+            plays = n(),
+            pass_plays = sum(pbp.pass),
+            pass_pct = pass_plays / plays,
+            yards_gained = sum(pbp.yards_gained),
+            shotgun_snaps = sum(pbp.shotgun),
+            no_huddle_snap = sum(pbp.no_huddle),
+            epa_per_play = round(mean(pbp.epa), digits = 2))
+
+```
+
+## Introduction {.scrollable}
 
 -   Linear Mixed-Effects Models can be used to model correlated data
     -   Take the form of cross sectional or longitudinal data
@@ -15,15 +60,100 @@ editor: visual
 
 ## Methods
 
-When you click the **Render** button a document will be generated that includes:
+- lme4 package has become the predominant tool in the R language for fitting linear mixed-effect models
+- a linear mixed model is described by the distribution of two vector-valued random variables: $Y$, the response, and $\beta$, the vector of random effects
+- Our basic model: $$epa = plays +  (1+plays|coach)$$
 
--   Content authored with markdown
--   Output from executable code
+## Data {.scrollable}
 
-## Code
+Our data featured a play by play analysis for every game in the 2021 season.
 
-When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+| Variable         | Meaning                                                                 |
+|:----------------|:------------------------------------------------------|
+| pbp.posteam      | the team with possession of the ball (offense)                          |
+| pop.posteam_type | specifies if the possessing team is home or away                        |
+| pbp.game_id      | the specific game id from the NFL                                       |
+| week             | week number in the season that the game was played                      |
+| season_type      | flag that specifies if it is a regular (0) or post (1) season game      |
+| home_adv         | flag that specifies home (0) or away(1)                                 |
+| coach            | the coach of the team with possession (offensive plays)                 |
+| opp_coach        | the coach of the opposing team (defensive plays)                        |
+| plays            | total number of rush and pass plays given the team and game             |
+| pass_plays       | number of pass plays given the team and game                            |
+| pass_pct         | the percentage of pass plays in the game calculated by pass_plays/plays |
+| yards_gained     | yards gained by an offense                                              |
+| shotgun_snaps    | number of snaps a team lined up in a shotgun formation                  |
+| ho_huddle_snaps  | number of snaps a team used a no huddle offense                         |
+| EPA_per_play     | the mean of all pass and rush plays given team and game                 |
+
+---
+
+```{r, warning=FALSE, echo=TRUE}
+# Compare EPA by coach
+ggplot(team_sum2, aes(epa_per_play)) +
+  geom_boxplot() +
+  facet_wrap(~ coach) +
+  theme_minimal()
+  
+```
+
+## Code {.scrollable}
 
 ```{r}
-1 + 1
+#| include: true
+#| echo: true
+
+
+# LMM - random intercepts
+epa.lmer1 = lmer(epa_per_play ~ pass_pct + plays + yards_gained + no_huddle_snap + 
+(1|coach) + (1|home_adv), data=team_sum2)
+
+epa.lmer1
 ```
+
+-home advantage random effect approaches zero
+  - no additional change in EPA per play due to home field advantage 
+-additional 0.02 EPA per play due to coaching
+
+---
+
+```{r}
+#| include: true
+#| echo: true
+
+# LMM - random slopes
+epa.lmer2 = lmer(epa_per_play ~ pass_pct + plays + yards_gained + shotgun_snaps + no_huddle_snap +
+(1+pass_pct|coach) + (1+plays|coach) + (1+yards_gained|coach) + (1+shotgun_snaps|coach) + (1+no_huddle_snap|coach), data=team_sum2)
+```
+
+- different baseline levels of plays ran and pass_pct
+  - all the values are negative and very close to each other
+- there's consistency with how often coaches throw the ball
+-variation in number of shotgun snaps an offense runs is much wider
+
+---
+```{r}
+#| include: true
+#| echo: true
+
+
+# Testing for significance between models with and without home field advantage
+epa.lmer2.null = lmer(epa_per_play ~ pass_pct + plays + yards_gained + shotgun_snaps + no_huddle_snap +
+                  (1+pass_pct|coach) + (1+plays|coach) + (1+yards_gained|coach) + (1+shotgun_snaps|coach) + (1+no_huddle_snap|coach),                                            data=team_sum2,
+                  REML=FALSE)
+
+epa.lmer2.full = lmer(epa_per_play ~ home_adv + pass_pct + plays + yards_gained + shotgun_snaps + no_huddle_snap +
+                  (1+home_adv|coach) + (1+pass_pct|coach) + (1+plays|coach) + (1+yards_gained|coach) + (1+shotgun_snaps|coach) + (1+no_huddle_snap|coach),                       data=team_sum2,
+                  REML=FALSE)
+
+anova(epa.lmer2.full, epa.lmer2.null)
+
+```
+
+- no statistical significance between the models 
+-the effect of home field advantage is minimal to zero
+
+## Conclusion
+
+After accounting for the fixed effects plays ran, percentage of pass plays, yards gained, shotgun snaps, and no huddle snaps, our random effect coefficient for coaching showed an additional change 0.02 EPA per play due to coaching and no change in EPA per play due to home field advantage.

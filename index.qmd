@@ -12,6 +12,7 @@ bibliography: references.bib # file contains bibtex for references
 link-citations: yes
 #always_allow_html: true # this allows to get PDF with HTML features
 ---
+[Link to presentation ](http://rpubs.com/beg18/LMMs)
 
 ## Introduction
 
@@ -45,7 +46,7 @@ After doing an extensive review of current literature, our group aims to gain an
 
 <!-- #### What are the assumptions of this model? -->
 
-The complex nature of mixed-effects models call into question the robustness of these models and brings more focus to the model assumptions. "Mixed-effects models involve complex fitting procedures and make several assumptions, in particular about the distribution of residual and random effects. Violations of these assumptions are common in real data sets, yet it is not always clear how much these violations matter to accurate and unbiased estimation" (@schielzeth2020robustness). @schielzeth2020robustness discuss the consequences of violations of these assumptions and the impact of missing random effect components on model estimates. The study found mixed-effects models to be very robust to violations of these assumptions, finding the estimates were unbiased (although imprecise) and missing random effect predictors had little effect on the fixed effect estimates but had systematic effects on the estimates of random effects [@schielzeth2020robustness].
+The complex nature of mixed-effects models call into question the robustness of these models and brings more focus to the model assumptions. "Mixed-effects models involve complex fitting procedures and make several assumptions, in particular about the distribution of residual and random effects. Violations of these assumptions are common in real data sets, yet it is not always clear how much these violations matter to accurate and unbiased estimation" [@schielzeth2020robustness]. They go on to discuss the consequences of violations of these assumptions and the impact of missing random effect components on model estimates. The study found mixed-effects models to be very robust to violations of these assumptions, finding the estimates were unbiased (although imprecise) and missing random effect predictors had little effect on the fixed effect estimates but had systematic effects on the estimates of random effects [@schielzeth2020robustness].
 
 Many technical papers have delved into the formulation and implementation of linear mixed-effects models, many following the lead of Bates et al. paper, "Fitting linear mixed-effects models using lme4" (2014). @bates2014fitting outlines the creation and implementation of the lme4 package as an extension of lmer function, which has become the predominant tool in the R language for fitting linear mixed-effect models. As for most model-fitting functions in R, the model is described in an lmer call by a formula, in this case including both fixed- and random-effects terms [@bates2014fitting]. The paper describes the structure of the model, the steps in evaluating the profiled deviance or REML criterion, and the structure of classes or types that represents such a model [@bates2014fitting]. One of the more controversial design decisions of lme4 has been to omit the output of p values (these can be found using parametric bootstrapping functionality). "While the null distributions (and the sampling distributions of non-null estimates) are asymptotically normal, these distributions are not t distributed for finite size samples --- nor are the corresponding null distributions of differences in scaled deviances F distributed." [@bates2014fitting]. A common problem in mixed-model inference is the lack of analytical results for parameter estimates in complex situations including unbalanced or crossed designs. [@bates2014fitting] $W_n(x)$ is the sum of weights that belongs to all real numbers. Weights are positive numbers and small if $X_i$ is far from $x$.
 
@@ -127,6 +128,8 @@ team_sum2 <- team_sum1 %>%
             shotgun_snaps = sum(pbp.shotgun),
             no_huddle_snap = sum(pbp.no_huddle),
             epa_per_play = round(mean(pbp.epa), digits = 2))
+
+team_sum2
 ```
 
 Here is the summary of the variables we are choosing to model coach effectiveness.
