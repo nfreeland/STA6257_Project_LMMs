@@ -15,9 +15,7 @@ link-citations: yes
 always_allow_html: true # this allows to get PDF with HTML features
 ---
 
-[Link to presentation](http://rpubs.com/beg18/LMMs)
-
-[Link to document](https://beg18uwf.github.io/STA6257_Project_LMMs/)
+[Link to presentation](https://beg18uwf.github.io/STA6257_Project_LMMs/Slides)
 
 ## Introduction
 
