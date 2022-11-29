@@ -1,7 +1,6 @@
 ---
 title: "Linear Mixed-Effects Models"
 author: "Nick Freeland, Bernice Green, Gary Marmon"
-course: STA 6257 - Advanced Statistical Modeling
 format:
   revealjs: 
     theme: league
