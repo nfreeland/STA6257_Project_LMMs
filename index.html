@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Nick Freeland, Bernice Green, Gary Marmon">
-<meta name="dcterms.date" content="2022-11-21">
+<meta name="dcterms.date" content="2022-11-28">
 
 <title>Linear Mixed Effect Models</title>
 <style>
@@ -164,7 +164,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 21, 2022</p>
+      <p class="date">November 28, 2022</p>
     </div>
   </div>
     
@@ -210,8 +210,8 @@ Y ∼ N(Xβ + o, σ^2 W^{-1})
 <p>Our data featured a play by play analysis for every game in the 2021 season. We are attempting to model the coaches effect using the EPA. We first decided to aggregate the data by game and team. We are assuming that all plays are rush or pass and will be using the pass percentage (pass_pct) to model the two different play options per game. After summarizing, we end up with the following table.</p>
 <table class="table">
 <colgroup>
-<col style="width: 23%">
-<col style="width: 76%">
+<col style="width: 25%">
+<col style="width: 75%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -225,7 +225,7 @@ Y ∼ N(Xβ + o, σ^2 W^{-1})
 <td style="text-align: left;">the team with possession of the ball (offense)</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">pop.posteam_type</td>
+<td style="text-align: left;">pbp.posteam_type</td>
 <td style="text-align: left;">specifies if the possessing team is home or away</td>
 </tr>
 <tr class="odd">
@@ -328,36 +328,15 @@ Y ∼ N(Xβ + o, σ^2 W^{-1})
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>            <span class="at">yards_gained =</span> <span class="fu">sum</span>(pbp.yards_gained),</span>
 <span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>            <span class="at">shotgun_snaps =</span> <span class="fu">sum</span>(pbp.shotgun),</span>
 <span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>            <span class="at">no_huddle_snap =</span> <span class="fu">sum</span>(pbp.no_huddle),</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>            <span class="at">epa_per_play =</span> <span class="fu">round</span>(<span class="fu">mean</span>(pbp.epa), <span class="at">digits =</span> <span class="dv">2</span>))</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>team_sum2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>            <span class="at">epa_per_play =</span> <span class="fu">round</span>(<span class="fu">mean</span>(pbp.epa), <span class="at">digits =</span> <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 570 x 15
-# Groups:   pbp.posteam, pbp.posteam_type [64]
-   pbp.posteam pbp.posteam_type pbp.game_id      week season_type home_adv coach
-   &lt;chr&gt;       &lt;chr&gt;            &lt;chr&gt;           &lt;int&gt;       &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;
- 1 ARI         away             2021_01_ARI_TEN     1           0        1 Klif~
- 2 ARI         away             2021_03_ARI_JAX     3           0        1 Klif~
- 3 ARI         away             2021_04_ARI_LA      4           0        1 Klif~
- 4 ARI         away             2021_06_ARI_CLE     6           0        1 Klif~
- 5 ARI         away             2021_09_ARI_SF      9           0        1 Klif~
- 6 ARI         away             2021_11_ARI_SEA    11           0        1 Klif~
- 7 ARI         away             2021_13_ARI_CHI    13           0        1 Klif~
- 8 ARI         away             2021_15_ARI_DET    15           0        1 Klif~
- 9 ARI         away             2021_17_ARI_DAL    17           0        1 Klif~
-10 ARI         away             2021_19_ARI_LA     19           1        1 Klif~
-# ... with 560 more rows, and 8 more variables: opp_coach &lt;chr&gt;, plays &lt;int&gt;,
-#   pass_plays &lt;dbl&gt;, pass_pct &lt;dbl&gt;, yards_gained &lt;dbl&gt;, shotgun_snaps &lt;dbl&gt;,
-#   no_huddle_snap &lt;dbl&gt;, epa_per_play &lt;dbl&gt;</code></pre>
-</div>
 </div>
 <p>Here is the summary of the variables we are choosing to model coach effectiveness.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#generate a summary of each of the features of our data set</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(team_sum2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#generate a summary of each of the features of our data set</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(team_sum2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code> pbp.posteam        pbp.posteam_type   pbp.game_id             week       
@@ -393,6 +372,10 @@ Y ∼ N(Xβ + o, σ^2 W^{-1})
  Max.   :91.00   Max.   :50.000   Max.   : 0.720000  
                                                      </code></pre>
 </div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#replace this section with histograms (or other viz) for numerical data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="visualization" class="level3">

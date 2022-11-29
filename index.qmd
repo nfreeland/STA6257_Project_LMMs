@@ -9,15 +9,15 @@ format:
     toc: true
     cite-method: citeproc
     code-fold: true
-course: STA 6257 - Advance Statistical Modeling
+course: STA 6257 - Advanced Statistical Modeling
 bibliography: references.bib # file contains bibtex for references
 link-citations: yes
-#always_allow_html: true # this allows to get PDF with HTML features
+always_allow_html: true # this allows to get PDF with HTML features
 ---
-[Link to presentation ](http://rpubs.com/beg18/LMMs)
+
+[Link to presentation](http://rpubs.com/beg18/LMMs)
 
 [Link to document](https://beg18uwf.github.io/STA6257_Project_LMMs/)
-
 
 ## Introduction
 
@@ -72,9 +72,9 @@ Our basic model: $$epa = plays +  (1+plays|coach)$$
 Our data featured a play by play analysis for every game in the 2021 season. We are attempting to model the coaches effect using the EPA. We first decided to aggregate the data by game and team. We are assuming that all plays are rush or pass and will be using the pass percentage (pass_pct) to model the two different play options per game. After summarizing, we end up with the following table.
 
 | Variable         | Meaning                                                                 |
-|:----------------|:------------------------------------------------------|
+|:-----------------|:-----------------------------------------------------|
 | pbp.posteam      | the team with possession of the ball (offense)                          |
-| pop.posteam_type | specifies if the possessing team is home or away                        |
+| pbp.posteam_type | specifies if the possessing team is home or away                        |
 | pbp.game_id      | the specific game id from the NFL                                       |
 | week             | week number in the season that the game was played                      |
 | season_type      | flag that specifies if it is a regular (0) or post (1) season game      |
@@ -134,14 +134,16 @@ team_sum2 <- team_sum1 %>%
             no_huddle_snap = sum(pbp.no_huddle),
             epa_per_play = round(mean(pbp.epa), digits = 2))
 
-team_sum2
 ```
 
 Here is the summary of the variables we are choosing to model coach effectiveness.
 
 ```{r, warning=FALSE, echo=TRUE}
 #generate a summary of each of the features of our data set
+#replace this section with histograms (or other viz) for numerical data
+
 summary(team_sum2)
+
 ```
 
 ### Visualization

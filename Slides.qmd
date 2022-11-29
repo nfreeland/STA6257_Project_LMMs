@@ -1,8 +1,12 @@
 ---
-title: "STA6257_Project_LMMs"
-format: revealjs
-editor: visual
+title: "Linear Mixed-Effects Models"
+author: "Nick Freeland, Bernice Green, Gary Marmon"
+course: STA 6257 - Advanced Statistical Modeling
+format:
+  revealjs: 
+    theme: league
 ---
+
 ```{r}
 
 #| include: false
@@ -49,30 +53,73 @@ team_sum2 <- team_sum1 %>%
 
 ```
 
-## Introduction {.scrollable}
+# Introduction
 
--   Linear Mixed-Effects Models can be used to model correlated data
-    -   Take the form of cross sectional or longitudinal data
--   Called "mixed" because they simultaneously model fixed and random effects
-    -   fixed effects model average trends
-    -   random effects model the extent to which these trends vary across levels of some grouping factor
--   Main application for mixed-effect models is in psychology due to the nature of their data and repeated observations across trial participants
+## Simple Linear Regressions
 
-## Methods
+-   assumes independence of observations
 
-- lme4 package has become the predominant tool in the R language for fitting linear mixed-effect models
-- a linear mixed model is described by the distribution of two vector-valued random variables: $Y$, the response, and $\beta$, the vector of random effects
-- Our basic model: $$epa = plays +  (1+plays|coach)$$
+-   slopes and intercepts measure average trends
 
-## Data {.scrollable}
+    <!-- insert pictures -->
+
+# But...
+
+What if the observations are not independent? 
+
+
+What if trends vary between clusters? 
+
+## Linear Mixed-Effects Models (LMMs)
+
+-   LMMs can be used to model correlated data
+    -   Cross sectional data: individuals nested in a geographical or social context - *ex: Student test data compared across Geometry classes*
+
+    -   Longitudinal data: repeated measures of individuals - *ex: Student test data over time*
+
+Main application for mixed-effect models is in psychology due to the nature of their data and repeated observations across trial participants
+
+## Fixed vs. Random Effects
+
+-   Fixed effects show average trends for the population
+-   Random effects show how trends vary across groups
+    -   explains error due to differences between groups
+
+<!-- include examples of fixed and random effects -->
+
+## Fixed and Random Effects
+
+-   mixed-effects models simultaneously model fixed and random effects
+
+-   fixed effect parameters
+    -   small number of clusters, large number of observations
+
+-   random effect parameters
+    -   large number of clusters, small number of clusters per observation
+
+**It's important to include the random effects in the model since fixed effects only give a partial picture of hierarchical data**
+
+## Linear Model vs Linear Mixed-Effects Model
+<!-- show comparisons of sample graphs and models -->
+
+# Methods
+
+##  {.scrollable}
+
+-   lme4 package has become the predominant tool in the R language for fitting linear mixed-effect models
+-   a linear mixed model is described by the distribution of two vector-valued random variables: $Y$, the response, and $\beta$, the vector of random effects
+-   Our basic model: $$epa = plays +  (1+plays|coach)$$
+
+# Data
+
+##  {.scrollable}
 
 Our data featured a play by play analysis for every game in the 2021 season.
 
-
 | Variable         | Meaning                                                                 |
-|:----------------|:------------------------------------------------------|
+|:-------------------|:---------------------------------------------------|
 | pbp.posteam      | the team with possession of the ball (offense)                          |
-| pop.posteam_type | specifies if the possessing team is home or away                        |
+| pbp.posteam_type | specifies if the possessing team is home or away                        |
 | pbp.game_id      | the specific game id from the NFL                                       |
 | week             | week number in the season that the game was played                      |
 | season_type      | flag that specifies if it is a regular (0) or post (1) season game      |
@@ -87,7 +134,7 @@ Our data featured a play by play analysis for every game in the 2021 season.
 | ho_huddle_snaps  | number of snaps a team used a no huddle offense                         |
 | EPA_per_play     | the mean of all pass and rush plays given team and game                 |
 
----
+------------------------------------------------------------------------
 
 ```{r, warning=FALSE, echo=TRUE}
 # Compare EPA by coach
@@ -98,7 +145,9 @@ ggplot(team_sum2, aes(epa_per_play)) +
   
 ```
 
-## Code {.scrollable}
+# Analysis
+
+##  {.scrollable}
 
 ```{r}
 #| include: true
@@ -112,11 +161,9 @@ epa.lmer1 = lmer(epa_per_play ~ pass_pct + plays + yards_gained + no_huddle_snap
 epa.lmer1
 ```
 
--home advantage random effect approaches zero
-  - no additional change in EPA per play due to home field advantage 
--additional 0.02 EPA per play due to coaching
+-home advantage random effect approaches zero - no additional change in EPA per play due to home field advantage -additional 0.02 EPA per play due to coaching
 
----
+------------------------------------------------------------------------
 
 ```{r}
 #| include: true
@@ -127,12 +174,12 @@ epa.lmer2 = lmer(epa_per_play ~ pass_pct + plays + yards_gained + shotgun_snaps 
 (1+pass_pct|coach) + (1+plays|coach) + (1+yards_gained|coach) + (1+shotgun_snaps|coach) + (1+no_huddle_snap|coach), data=team_sum2)
 ```
 
-- different baseline levels of plays ran and pass_pct
-  - all the values are negative and very close to each other
-- there's consistency with how often coaches throw the ball
--variation in number of shotgun snaps an offense runs is much wider
+-   different baseline levels of plays ran and pass_pct
+    -   all the values are negative and very close to each other
+-   there's consistency with how often coaches throw the ball -variation in number of shotgun snaps an offense runs is much wider
 
----
+------------------------------------------------------------------------
+
 ```{r}
 #| include: true
 #| echo: true
@@ -151,9 +198,8 @@ anova(epa.lmer2.full, epa.lmer2.null)
 
 ```
 
-- no statistical significance between the models 
--the effect of home field advantage is minimal to zero
+-   no statistical significance between the models -the effect of home field advantage is minimal to zero
 
-## Conclusion
+# Conclusion
 
 After accounting for the fixed effects plays ran, percentage of pass plays, yards gained, shotgun snaps, and no huddle snaps, our random effect coefficient for coaching showed an additional change 0.02 EPA per play due to coaching and no change in EPA per play due to home field advantage.
