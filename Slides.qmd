@@ -183,6 +183,8 @@ Our data featured a play by play analysis for every game in the 2021 season.
 
 ------------------------------------------------------------------------
 
+## EPA per Play by Coach
+
 ```{r, warning=FALSE, echo=TRUE}
 # Compare EPA by coach
 ggplot(team_sum2, aes(epa_per_play)) +
@@ -192,45 +194,129 @@ ggplot(team_sum2, aes(epa_per_play)) +
   
 ```
 
-# Analysis
+# Methodology
 
 ##  {.scrollable}
 
+Just as a linear model is described by the distribution of a vector-valued random response variable, Y, whose observed value is $y_{obs}$, a linear mixed model is described by the distribution of two vector-valued random variables: $Y$, the response, and $\beta$, the vector of random effects. In a linear model the distribution of Y is multivariate normal,
+
+$$
+Y ∼ N(Xβ + o, σ^2 W^{-1})
+$$
+Our basic model: $$epa = plays + (1+plays|coach)$$
+
+
+## Starting with a simple linear model {.smaller}
+
 ```{r}
 #| include: true
 #| echo: true
+#| warning: false
+#| message: false
+epa.lm = lm(epa_per_play ~ pass_pct + plays + yards_gained + shotgun_snaps + no_huddle_snap, 
+            data=team_sum2)
+summary(epa.lm)
+```
 
+- After accounting for the other variables, the number of shotgun snaps an offense runs does not appear to significantly effect epa per play
+- Current model explains approximately 63% of the variance in epa per play. 
+
+## Diagnostics
+
+```{r}
+#| include: true
+#| echo: true
+#| warning: false
+#| message: false
+autoplot(epa.lm)
+```
+
+- a few outliers are present, but the overall fit looks acceptable.
+- we will move forward with a linear approach
+
+## Linear Mixed Effects Model {.smaller}
+
+- We want to account for a teams coach and if a team has home field advantage as random effects. 
+
+```{r}
+#| include: true
+#| echo: true
+#| warning: false
+#| message: false
 
 # LMM - random intercepts
 epa.lmer1 = lmer(epa_per_play ~ pass_pct + plays + yards_gained + no_huddle_snap + 
-(1|coach) + (1|home_adv), data=team_sum2)
+                (1|coach) + (1|home_adv), data=team_sum2)
 
 epa.lmer1
 ```
-
--home advantage random effect approaches zero - no additional change in EPA per play due to home field advantage -additional 0.02 EPA per play due to coaching
-
-------------------------------------------------------------------------
+## Interpreting the Random Effects {.smaller}
 
 ```{r}
 #| include: true
 #| echo: true
+#| warning: false
+#| message: false
+#| 
+epa.lmer1
+```
+
+
+- we observe the home advantage random effect approaches zero, concluding there is no additional change in epa per play due to home field advantage itself. 
+
+- we observe an additional 0.02 epa per play due to coaching  
+
+
+## Random Intercept Model {.smaller}
+
+```{r}
+#| include: true
+#| echo: true
+#| warning: false
+#| message: false
+coef(epa.lmer1)
+```
+- Each coach is assigned a different intercept, but the fixed effects are the same for all coaches. 
+- This model is called a Random Intercept model; we are accounting for baseline differences in epa per play. 
+
+## Random Slope Model {.smaller}
+
+```{r}
+#| include: true
+#| echo: true
+#| warning: false
+#| message: false
 
 # LMM - random slopes
 epa.lmer2 = lmer(epa_per_play ~ pass_pct + plays + yards_gained + shotgun_snaps + no_huddle_snap +
-(1+pass_pct|coach) + (1+plays|coach) + (1+yards_gained|coach) + (1+shotgun_snaps|coach) + (1+no_huddle_snap|coach), data=team_sum2)
+                (1+pass_pct|coach) + (1+plays|coach) + (1+yards_gained|coach) + (1+shotgun_snaps|coach) + (1+no_huddle_snap|coach), data=team_sum2)
 ```
 
--   different baseline levels of plays ran and pass_pct
-    -   all the values are negative and very close to each other
--   there's consistency with how often coaches throw the ball -variation in number of shotgun snaps an offense runs is much wider
+- Alternatively, in a Random Slope model, each coach is allowed to have a different intercept, as well as different slopes for the effect of number of plays ran and percentage of pass plays, etc.
 
-------------------------------------------------------------------------
+## Interpretation {.smaller}
 
 ```{r}
 #| include: true
 #| echo: true
+#| warning: false
+#| message: false
+coef(epa.lmer2)
+```
 
+
+- Despite the individual variation of pass_pct, all the values are negative and very close to each other. 
+- We see consistency with how often coaches throw the ball. 
+- The variation in number of shotgun snaps an offense runs is much wider.
+
+
+## Testing for Significance Between Models {.smaller}
+
+```{r}
+#| include: true
+#| echo: true
+#| warning: false
+#| message: false
 
 # Testing for significance between models with and without home field advantage
 epa.lmer2.null = lmer(epa_per_play ~ pass_pct + plays + yards_gained + shotgun_snaps + no_huddle_snap +
@@ -245,8 +331,8 @@ anova(epa.lmer2.full, epa.lmer2.null)
 
 ```
 
--   no statistical significance between the models -the effect of home field advantage is minimal to zero
+- no statistical significance between the models -the effect of home field advantage is minimal to zero
 
-# Conclusion
+## Conclusion {.smaller}
 
-After accounting for the fixed effects plays ran, percentage of pass plays, yards gained, shotgun snaps, and no huddle snaps, our random effect coefficient for coaching showed an additional change 0.02 EPA per play due to coaching and no change in EPA per play due to home field advantage.
+Using a mixed-effects approach we are able to find the additional effect a subject (a team's coach in our case) has on a offenses success, measured by epa per play. After accounting for the fixed effects plays ran, percentage of pass plays, yards gained, shotgun snaps, and no huddle snaps, our random effect coefficient for coaching showed an additional change 0.02 epa per play due to coaching and no change in epa per play due to home field advantage.

@@ -7,7 +7,7 @@
 <link href="Slides_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="Slides_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="Slides_files/libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.1.189">
+  <meta name="generator" content="quarto-1.0.36">
 
   <meta name="author" content="Nick Freeland, Bernice Green, Gary Marmon">
   <title>Linear Mixed-Effects Models</title>
@@ -19,15 +19,10 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -540,8 +535,8 @@
 </tbody>
 </table>
 </section>
-<section class="slide level2">
-
+<section id="epa-per-play-by-coach" class="slide level2">
+<h2>EPA per Play by Coach</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Compare EPA by coach</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="fu">ggplot</span>(team_sum2, <span class="fu">aes</span>(epa_per_play)) <span class="sc">+</span></span>
@@ -552,18 +547,78 @@
 </div>
 <img data-src="Slides_files/figure-revealjs/unnamed-chunk-10-1.png" width="960" class="r-stretch"></section></section>
 <section>
-<section id="analysis" class="title-slide slide level1 center">
-<h1>Analysis</h1>
+<section id="methodology" class="title-slide slide level1 center">
+<h1>Methodology</h1>
 
 </section>
 <section id="section-1" class="slide level2 scrollable">
 <h2></h2>
+<p>Just as a linear model is described by the distribution of a vector-valued random response variable, Y, whose observed value is <span class="math inline">\(y_{obs}\)</span>, a linear mixed model is described by the distribution of two vector-valued random variables: <span class="math inline">\(Y\)</span>, the response, and <span class="math inline">\(\beta\)</span>, the vector of random effects. In a linear model the distribution of Y is multivariate normal,</p>
+<p><span class="math display">\[
+Y ∼ N(Xβ + o, σ^2 W^{-1})
+\]</span></p>
+<p>Our basic model: <span class="math display">\[epa = plays + (1+plays|coach)\]</span></p>
+</section>
+<section id="starting-with-a-simple-linear-model" class="slide level2 smaller">
+<h2>Starting with a simple linear model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># LMM - random intercepts</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a>epa.lmer1 <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> no_huddle_snap <span class="sc">+</span> </span>
-<span id="cb2-3"><a href="#cb2-3"></a>(<span class="dv">1</span><span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>home_adv), <span class="at">data=</span>team_sum2)</span>
-<span id="cb2-4"><a href="#cb2-4"></a></span>
-<span id="cb2-5"><a href="#cb2-5"></a>epa.lmer1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>epa.lm <span class="ot">=</span> <span class="fu">lm</span>(epa_per_play <span class="sc">~</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> shotgun_snaps <span class="sc">+</span> no_huddle_snap, </span>
+<span id="cb2-2"><a href="#cb2-2"></a>            <span class="at">data=</span>team_sum2)</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="fu">summary</span>(epa.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = epa_per_play ~ pass_pct + plays + yards_gained + 
+    shotgun_snaps + no_huddle_snap, data = team_sum2)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.47720 -0.07899  0.00753  0.08871  0.35041 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)    -6.873e-02  5.403e-02  -1.272    0.204    
+pass_pct       -3.627e-01  5.907e-02  -6.139 1.63e-09 ***
+plays          -6.159e-03  8.583e-04  -7.176 2.44e-12 ***
+yards_gained    2.024e-03  7.539e-05  26.842  &lt; 2e-16 ***
+shotgun_snaps   4.161e-04  6.035e-04   0.689    0.491    
+no_huddle_snap -2.163e-03  8.125e-04  -2.662    0.008 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.1254 on 530 degrees of freedom
+  (34 observations deleted due to missingness)
+Multiple R-squared:  0.6302,    Adjusted R-squared:  0.6267 
+F-statistic: 180.7 on 5 and 530 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<ul>
+<li>After accounting for the other variables, the number of shotgun snaps an offense runs does not appear to significantly effect epa per play</li>
+<li>Current model explains approximately 63% of the variance in epa per play.</li>
+</ul>
+</section>
+<section id="diagnostics" class="slide level2">
+<h2>Diagnostics</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">autoplot</span>(epa.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Slides_files/figure-revealjs/unnamed-chunk-14-1.png" width="960" class="r-stretch"><ul>
+<li>a few outliers are present, but the overall fit looks acceptable.</li>
+<li>we will move forward with a linear approach</li>
+</ul>
+</section>
+<section id="linear-mixed-effects-model" class="slide level2 smaller">
+<h2>Linear Mixed Effects Model</h2>
+<ul>
+<li>We want to account for a teams coach and if a team has home field advantage as random effects.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># LMM - random intercepts</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>epa.lmer1 <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> no_huddle_snap <span class="sc">+</span> </span>
+<span id="cb5-3"><a href="#cb5-3"></a>                (<span class="dv">1</span><span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>home_adv), <span class="at">data=</span>team_sum2)</span>
+<span id="cb5-4"><a href="#cb5-4"></a></span>
+<span id="cb5-5"><a href="#cb5-5"></a>epa.lmer1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML ['lmerModLmerTest']
 Formula: epa_per_play ~ pass_pct + plays + yards_gained + no_huddle_snap +  
@@ -582,36 +637,201 @@ Fixed Effects:
 optimizer (nloptwrap) convergence code: 0 (OK) ; 0 optimizer warnings; 1 lme4 warnings </code></pre>
 </div>
 </div>
-<p>-home advantage random effect approaches zero - no additional change in EPA per play due to home field advantage -additional 0.02 EPA per play due to coaching</p>
 </section>
-<section class="slide level2">
-
+<section id="interpreting-the-random-effects" class="slide level2 smaller">
+<h2>Interpreting the Random Effects</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># LMM - random slopes</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>epa.lmer2 <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> shotgun_snaps <span class="sc">+</span> no_huddle_snap <span class="sc">+</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a>(<span class="dv">1</span><span class="sc">+</span>pass_pct<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>plays<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>yards_gained<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>shotgun_snaps<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>no_huddle_snap<span class="sc">|</span>coach), <span class="at">data=</span>team_sum2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>epa.lmer1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML ['lmerModLmerTest']
+Formula: epa_per_play ~ pass_pct + plays + yards_gained + no_huddle_snap +  
+    (1 | coach) + (1 | home_adv)
+   Data: team_sum2
+REML criterion at convergence: -657.5259
+Random effects:
+ Groups   Name        Std.Dev.
+ coach    (Intercept) 0.02138 
+ home_adv (Intercept) 0.00000 
+ Residual             0.12358 
+Number of obs: 536, groups:  coach, 34; home_adv, 2
+Fixed Effects:
+   (Intercept)        pass_pct           plays    yards_gained  no_huddle_snap  
+     -0.065738       -0.360035       -0.005792        0.001993       -0.002185  
+optimizer (nloptwrap) convergence code: 0 (OK) ; 0 optimizer warnings; 1 lme4 warnings </code></pre>
+</div>
 </div>
 <ul>
-<li>different baseline levels of plays ran and pass_pct
-<ul>
-<li>all the values are negative and very close to each other</li>
-</ul></li>
-<li>there’s consistency with how often coaches throw the ball -variation in number of shotgun snaps an offense runs is much wider</li>
+<li><p>we observe the home advantage random effect approaches zero, concluding there is no additional change in epa per play due to home field advantage itself.</p></li>
+<li><p>we observe an additional 0.02 epa per play due to coaching</p></li>
 </ul>
 </section>
-<section class="slide level2">
-
+<section id="random-intercept-model" class="slide level2 smaller">
+<h2>Random Intercept Model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Testing for significance between models with and without home field advantage</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>epa.lmer2.null <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> shotgun_snaps <span class="sc">+</span> no_huddle_snap <span class="sc">+</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a>                  (<span class="dv">1</span><span class="sc">+</span>pass_pct<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>plays<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>yards_gained<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>shotgun_snaps<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>no_huddle_snap<span class="sc">|</span>coach),                                            <span class="at">data=</span>team_sum2,</span>
-<span id="cb5-4"><a href="#cb5-4"></a>                  <span class="at">REML=</span><span class="cn">FALSE</span>)</span>
-<span id="cb5-5"><a href="#cb5-5"></a></span>
-<span id="cb5-6"><a href="#cb5-6"></a>epa.lmer2.full <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> home_adv <span class="sc">+</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> shotgun_snaps <span class="sc">+</span> no_huddle_snap <span class="sc">+</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a>                  (<span class="dv">1</span><span class="sc">+</span>home_adv<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>pass_pct<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>plays<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>yards_gained<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>shotgun_snaps<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>no_huddle_snap<span class="sc">|</span>coach),                       <span class="at">data=</span>team_sum2,</span>
-<span id="cb5-8"><a href="#cb5-8"></a>                  <span class="at">REML=</span><span class="cn">FALSE</span>)</span>
-<span id="cb5-9"><a href="#cb5-9"></a></span>
-<span id="cb5-10"><a href="#cb5-10"></a><span class="fu">anova</span>(epa.lmer2.full, epa.lmer2.null)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">coef</span>(epa.lmer1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$coach
+                (Intercept)   pass_pct        plays yards_gained no_huddle_snap
+Andy Reid       -0.04320522 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Arthur Smith    -0.07545211 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Bill Belichick  -0.06125237 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Brandon Staley  -0.05998892 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Brian Flores    -0.04802109 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Bruce Arians    -0.04782538 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Dan Campbell    -0.07769279 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Darrell Bevell  -0.06463750 -0.3600351 -0.005791862  0.001992788   -0.002184533
+David Culley    -0.08170016 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Frank Reich     -0.06182493 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Joe Judge       -0.06773172 -0.3600351 -0.005791862  0.001992788   -0.002184533
+John Harbaugh   -0.07460723 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Jon Gruden      -0.07307754 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Kevin Stefanski -0.06918734 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Kliff Kingsbury -0.05564862 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Kyle Shanahan   -0.08706086 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Matt LaFleur    -0.04161529 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Matt Nagy       -0.07627911 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Matt Rhule      -0.07697774 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Mike McCarthy   -0.06800655 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Mike Tomlin     -0.05067471 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Mike Vrabel     -0.06455181 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Mike Zimmer     -0.07799479 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Nick Sirianni   -0.06563687 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Pete Carroll    -0.05485163 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Rich Bisaccia   -0.07533029 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Robert Saleh    -0.07004850 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Ron Rivera      -0.07123896 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Sean McDermott  -0.04492282 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Sean McVay      -0.06487735 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Sean Payton     -0.08293789 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Urban Meyer     -0.06971178 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Vic Fangio      -0.06030615 -0.3600351 -0.005791862  0.001992788   -0.002184533
+Zac Taylor      -0.07022429 -0.3600351 -0.005791862  0.001992788   -0.002184533
+
+$home_adv
+  (Intercept)   pass_pct        plays yards_gained no_huddle_snap
+0 -0.06573825 -0.3600351 -0.005791862  0.001992788   -0.002184533
+1 -0.06573825 -0.3600351 -0.005791862  0.001992788   -0.002184533
+
+attr(,"class")
+[1] "coef.mer"</code></pre>
+</div>
+</div>
+<ul>
+<li>Each coach is assigned a different intercept, but the fixed effects are the same for all coaches.</li>
+<li>This model is called a Random Intercept model; we are accounting for baseline differences in epa per play.</li>
+</ul>
+</section>
+<section id="random-slope-model" class="slide level2 smaller">
+<h2>Random Slope Model</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># LMM - random slopes</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a>epa.lmer2 <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> shotgun_snaps <span class="sc">+</span> no_huddle_snap <span class="sc">+</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a>                (<span class="dv">1</span><span class="sc">+</span>pass_pct<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>plays<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>yards_gained<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>shotgun_snaps<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>no_huddle_snap<span class="sc">|</span>coach), <span class="at">data=</span>team_sum2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Alternatively, in a Random Slope model, each coach is allowed to have a different intercept, as well as different slopes for the effect of number of plays ran and percentage of pass plays, etc.</li>
+</ul>
+</section>
+<section id="interpretation" class="slide level2 smaller">
+<h2>Interpretation</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">coef</span>(epa.lmer2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$coach
+                 (Intercept)   pass_pct        plays yards_gained shotgun_snaps
+Andy Reid        0.006728102 -0.3722720 -0.005903043  0.001981324  1.643708e-04
+Arthur Smith    -0.023457725 -0.4163653 -0.005069429  0.002304498 -3.061528e-04
+Bill Belichick  -0.140352195 -0.3184948 -0.005569778  0.002082485  2.021416e-03
+Brandon Staley  -0.033920695 -0.3747068 -0.005216834  0.001901461  9.572888e-04
+Brian Flores     0.002506320 -0.3522986 -0.005979379  0.001797215  5.451766e-04
+Bruce Arians     0.052625347 -0.3654553 -0.005339229  0.002170506 -2.141573e-03
+Dan Campbell    -0.032633593 -0.4078123 -0.005069111  0.002024292  3.117033e-04
+Darrell Bevell  -0.015657333 -0.3896159 -0.004847335  0.002069363  1.089954e-04
+David Culley     0.063837649 -0.4540726 -0.005290452  0.002363655 -8.149542e-04
+Frank Reich     -0.025375148 -0.3901127 -0.004961856  0.001921123  8.116697e-04
+Joe Judge       -0.178672995 -0.3502147 -0.005309498  0.002136269  2.272439e-03
+John Harbaugh   -0.085785257 -0.3705963 -0.005485294  0.001687278  2.533594e-04
+Jon Gruden      -0.065387302 -0.4016475 -0.006154771  0.001682994 -8.681434e-04
+Kevin Stefanski -0.068462398 -0.3889952 -0.005997136  0.001684096  4.496838e-04
+Kliff Kingsbury  0.051739732 -0.4048163 -0.004771162  0.002124108  2.616412e-03
+Kyle Shanahan   -0.092695066 -0.4018564 -0.004872697  0.001967280 -7.448583e-04
+Matt LaFleur     0.009175643 -0.3892986 -0.006130100  0.001926008 -2.117968e-03
+Matt Nagy       -0.012257161 -0.4602187 -0.005191404  0.001789964 -2.279178e-04
+Matt Rhule      -0.027027035 -0.4215012 -0.005008515  0.002083713  7.042946e-04
+Mike McCarthy   -0.050779149 -0.3789256 -0.006218571  0.001894948 -7.706345e-04
+Mike Tomlin     -0.000739052 -0.3588243 -0.005649494  0.001647816 -1.357040e-04
+Mike Vrabel     -0.092176195 -0.3681597 -0.005167046  0.001774901  8.072048e-04
+Mike Zimmer     -0.044902009 -0.4054232 -0.005807989  0.001576495  6.930357e-04
+Nick Sirianni    0.026657081 -0.3971460 -0.006063984  0.001597985 -8.912411e-04
+Pete Carroll    -0.010958598 -0.3705593 -0.005734104  0.001799123 -8.468388e-04
+Rich Bisaccia   -0.087976366 -0.3991398 -0.005000101  0.001939447  1.351791e-03
+Robert Saleh    -0.060129840 -0.3864619 -0.006329958  0.001930776 -4.410997e-04
+Ron Rivera      -0.014025074 -0.4086765 -0.005228427  0.002043236 -7.844644e-05
+Sean McDermott  -0.014575366 -0.3530997 -0.006428880  0.002164647  1.196181e-03
+Sean McVay      -0.080704890 -0.3672137 -0.006432359  0.001839938  1.301721e-04
+Sean Payton      0.017636375 -0.4697251 -0.004587776  0.002273799 -1.316270e-03
+Urban Meyer     -0.098298356 -0.3945568 -0.006070095  0.001652765 -3.788461e-04
+Vic Fangio      -0.054760804 -0.3936710 -0.005953839  0.001849059 -1.336985e-03
+Zac Taylor      -0.001455182 -0.4349757 -0.005740040  0.001874798 -2.737028e-03
+                no_huddle_snap
+Andy Reid        -0.0058093563
+Arthur Smith     -0.0058624367
+Bill Belichick   -0.0048304130
+Brandon Staley   -0.0044107145
+Brian Flores     -0.0010453179
+Bruce Arians      0.0001820800
+Dan Campbell     -0.0010163447
+Darrell Bevell   -0.0032434967
+David Culley     -0.0036796230
+Frank Reich      -0.0045399996
+Joe Judge         0.0009341072
+John Harbaugh     0.0004770374
+Jon Gruden       -0.0023511710
+Kevin Stefanski  -0.0028770576
+Kliff Kingsbury  -0.0035707260
+Kyle Shanahan     0.0008943490
+Matt LaFleur     -0.0067799681
+Matt Nagy        -0.0071003834
+Matt Rhule       -0.0034785858
+Mike McCarthy    -0.0006280615
+Mike Tomlin      -0.0038637422
+Mike Vrabel      -0.0070569422
+Mike Zimmer      -0.0022987409
+Nick Sirianni    -0.0011921270
+Pete Carroll     -0.0022896070
+Rich Bisaccia    -0.0034292690
+Robert Saleh     -0.0005199952
+Ron Rivera       -0.0023886547
+Sean McDermott   -0.0067992828
+Sean McVay       -0.0042224858
+Sean Payton      -0.0028031571
+Urban Meyer      -0.0032220211
+Vic Fangio       -0.0039772236
+Zac Taylor       -0.0023049594
+
+attr(,"class")
+[1] "coef.mer"</code></pre>
+</div>
+</div>
+<ul>
+<li>Despite the individual variation of pass_pct, all the values are negative and very close to each other.</li>
+<li>We see consistency with how often coaches throw the ball.</li>
+<li>The variation in number of shotgun snaps an offense runs is much wider.</li>
+</ul>
+</section>
+<section id="testing-for-significance-between-models" class="slide level2 smaller">
+<h2>Testing for Significance Between Models</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># Testing for significance between models with and without home field advantage</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a>epa.lmer2.null <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> shotgun_snaps <span class="sc">+</span> no_huddle_snap <span class="sc">+</span></span>
+<span id="cb14-3"><a href="#cb14-3"></a>                  (<span class="dv">1</span><span class="sc">+</span>pass_pct<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>plays<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>yards_gained<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>shotgun_snaps<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>no_huddle_snap<span class="sc">|</span>coach),                                            <span class="at">data=</span>team_sum2,</span>
+<span id="cb14-4"><a href="#cb14-4"></a>                  <span class="at">REML=</span><span class="cn">FALSE</span>)</span>
+<span id="cb14-5"><a href="#cb14-5"></a></span>
+<span id="cb14-6"><a href="#cb14-6"></a>epa.lmer2.full <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> home_adv <span class="sc">+</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> shotgun_snaps <span class="sc">+</span> no_huddle_snap <span class="sc">+</span></span>
+<span id="cb14-7"><a href="#cb14-7"></a>                  (<span class="dv">1</span><span class="sc">+</span>home_adv<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>pass_pct<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>plays<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>yards_gained<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>shotgun_snaps<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>no_huddle_snap<span class="sc">|</span>coach),                       <span class="at">data=</span>team_sum2,</span>
+<span id="cb14-8"><a href="#cb14-8"></a>                  <span class="at">REML=</span><span class="cn">FALSE</span>)</span>
+<span id="cb14-9"><a href="#cb14-9"></a></span>
+<span id="cb14-10"><a href="#cb14-10"></a><span class="fu">anova</span>(epa.lmer2.full, epa.lmer2.null)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Data: team_sum2
 Models:
@@ -625,14 +845,14 @@ epa.lmer2.full   26 -663.43 -552.04 357.72  -715.43 2.4394  4     0.6555</code><
 <ul>
 <li>no statistical significance between the models -the effect of home field advantage is minimal to zero</li>
 </ul>
-</section></section>
-<section id="conclusion" class="title-slide slide level1 center">
-<h1>Conclusion</h1>
-<p>After accounting for the fixed effects plays ran, percentage of pass plays, yards gained, shotgun snaps, and no huddle snaps, our random effect coefficient for coaching showed an additional change 0.02 EPA per play due to coaching and no change in EPA per play due to home field advantage.</p>
+</section>
+<section id="conclusion" class="slide level2 smaller">
+<h2>Conclusion</h2>
+<p>Using a mixed-effects approach we are able to find the additional effect a subject (a team’s coach in our case) has on a offenses success, measured by epa per play. After accounting for the fixed effects plays ran, percentage of pass plays, yards gained, shotgun snaps, and no huddle snaps, our random effect coefficient for coaching showed an additional change 0.02 epa per play due to coaching and no change in epa per play due to home field advantage.</p>
 <div class="footer footer-default">
 
 </div>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -954,8 +1174,7 @@ epa.lmer2.full   26 -663.43 -552.04 357.72  -715.43 2.4394  4     0.6555</code><
       for (var i=0; i<noterefs.length; i++) {
         const ref = noterefs[i];
         tippyHover(ref, function() {
-          // use id or data attribute instead here
-          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          let href = ref.getAttribute('href');
           try { href = new URL(href).hash; } catch {}
           const id = href.replace(/^#\/?/, "");
           const note = window.document.getElementById(id);

@@ -2,26 +2,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.189">
+<meta name="generator" content="quarto-1.0.36">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Nick Freeland, Bernice Green, Gary Marmon">
-<meta name="dcterms.date" content="2022-11-29">
+<meta name="dcterms.date" content="2022-11-30">
 
 <title>Linear Mixed Effect Models</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-  width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
-  vertical-align: middle;
-}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -60,7 +55,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
+code span.bu { } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -73,7 +68,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.im { } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -126,7 +121,7 @@ div.csl-indent {
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-  <nav id="TOC" role="doc-toc" class="toc-active">
+  <nav id="TOC" role="doc-toc">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
@@ -164,7 +159,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 29, 2022</p>
+      <p class="date">November 30, 2022</p>
     </div>
   </div>
     
@@ -173,7 +168,7 @@ div.csl-indent {
 
 </header>
 
-<p><a href="https://beg18uwf.github.io/STA6257_Project_LMMs/Slides">Link to presentation</a></p>
+<p><a href="https://beg18uwf.github.io/STA6257_Project_LMMs/Slides.html">Link to presentation</a></p>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <!-- #### What are LMMs?  -->
@@ -209,8 +204,8 @@ Y ∼ N(Xβ + o, σ^2 W^{-1})
 <p>Our data featured a play by play analysis for every game in the 2021 season. We are attempting to model the coaches effect using the EPA. We first decided to aggregate the data by game and team. We are assuming that all plays are rush or pass and will be using the pass percentage (pass_pct) to model the two different play options per game. After summarizing, we end up with the following table.</p>
 <table class="table">
 <colgroup>
-<col style="width: 26%">
-<col style="width: 73%">
+<col style="width: 27%">
+<col style="width: 72%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -330,134 +325,100 @@ Y ∼ N(Xβ + o, σ^2 W^{-1})
 <span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>            <span class="at">epa_per_play =</span> <span class="fu">round</span>(<span class="fu">mean</span>(pbp.epa), <span class="at">digits =</span> <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Here is the summary of the variables we are choosing to model coach effectiveness.</p>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#generate a summary of each of the features of our data set</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#replace this section with histograms (or other viz) for numerical data</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(team_sum2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code> pbp.posteam        pbp.posteam_type   pbp.game_id             week       
- Length:570         Length:570         Length:570         Min.   : 1.000  
- Class :character   Class :character   Class :character   1st Qu.: 5.000  
- Mode  :character   Mode  :character   Mode  :character   Median :10.000  
-                                                          Mean   : 9.958  
-                                                          3rd Qu.:15.000  
-                                                          Max.   :22.000  
-                                                                          
-  season_type         home_adv      coach            opp_coach        
- Min.   :0.00000   Min.   :0.0   Length:570         Length:570        
- 1st Qu.:0.00000   1st Qu.:0.0   Class :character   Class :character  
- Median :0.00000   Median :0.5   Mode  :character   Mode  :character  
- Mean   :0.04561   Mean   :0.5                                        
- 3rd Qu.:0.00000   3rd Qu.:1.0                                        
- Max.   :1.00000   Max.   :1.0                                        
-                                                                      
-     plays         pass_plays       pass_pct       yards_gained  
- Min.   :42.00   Min.   : 3.00   Min.   :0.0625   Min.   : 47.0  
- 1st Qu.:59.00   1st Qu.:34.00   1st Qu.:0.5538   1st Qu.:290.0  
- Median :65.00   Median :40.00   Median :0.6299   Median :348.0  
- Mean   :65.17   Mean   :40.44   Mean   :0.6194   Mean   :344.1  
- 3rd Qu.:71.00   3rd Qu.:46.00   3rd Qu.:0.6971   3rd Qu.:399.0  
- Max.   :99.00   Max.   :71.00   Max.   :0.9138   Max.   :571.0  
-                                                  NA's   :34     
- shotgun_snaps   no_huddle_snap    epa_per_play      
- Min.   : 3.00   Min.   : 0.000   Min.   :-0.840000  
- 1st Qu.:34.00   1st Qu.: 2.000   1st Qu.:-0.120000  
- Median :42.00   Median : 5.000   Median : 0.020000  
- Mean   :43.38   Mean   : 7.047   Mean   : 0.007772  
- 3rd Qu.:52.00   3rd Qu.:10.000   3rd Qu.: 0.140000  
- Max.   :91.00   Max.   :50.000   Max.   : 0.720000  
-                                                     </code></pre>
-</div>
-</div>
+<p>Below is the summary of the variables we are choosing to model coach effectiveness.</p>
 <table class="table">
-<colgroup>
-<col style="width: 21%">
-<col style="width: 9%">
-<col style="width: 15%">
-<col style="width: 15%">
-<col style="width: 12%">
-<col style="width: 15%">
-<col style="width: 10%">
-</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Variable</th>
-<th>Min</th>
-<th>1st Qu</th>
-<th>Median</th>
-<th>Mean</th>
-<th>3rd Qu</th>
-<th>Max</th>
+<th style="text-align: center;">Min.</th>
+<th style="text-align: center;">1st Qu.</th>
+<th style="text-align: center;">Median</th>
+<th style="text-align: center;">Mean</th>
+<th style="text-align: center;">3rd Qu.</th>
+<th style="text-align: center;">Max.</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">week</td>
-<td>1.000</td>
-<td>5.000</td>
-<td>10.000</td>
-<td>9.958</td>
-<td>15.000</td>
-<td>22.000</td>
+<td style="text-align: left;"><em>week</em></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">22</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">season_type</td>
-<td>0.00000</td>
-<td>0.00000</td>
-<td>0.00000</td>
-<td>0.04561</td>
-<td>3rd Qu</td>
-<td>1.00000</td>
+<td style="text-align: left;"><em>season_type</em></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0.045</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Variable</td>
-<td>Min</td>
-<td>1st Qu</td>
-<td>Median</td>
-<td>Mean</td>
-<td>3rd Qu</td>
-<td>Max</td>
+<td style="text-align: left;"><em>home_adv</em></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Variable</td>
-<td>Min</td>
-<td>1st Qu</td>
-<td>Median</td>
-<td>Mean</td>
-<td>3rd Qu</td>
-<td>Max</td>
+<td style="text-align: left;"><em>plays</em></td>
+<td style="text-align: center;">42</td>
+<td style="text-align: center;">59</td>
+<td style="text-align: center;">65</td>
+<td style="text-align: center;">65.17</td>
+<td style="text-align: center;">71</td>
+<td style="text-align: center;">99</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Variable</td>
-<td>Min</td>
-<td>1st Qu</td>
-<td>Median</td>
-<td>Mean</td>
-<td>3rd Qu</td>
-<td>Max</td>
+<td style="text-align: left;"><em>pass_plays</em></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">34</td>
+<td style="text-align: center;">40</td>
+<td style="text-align: center;">40.44</td>
+<td style="text-align: center;">46</td>
+<td style="text-align: center;">71</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Variable</td>
-<td>Min</td>
-<td>1st Qu</td>
-<td>Median</td>
-<td>Mean</td>
-<td>3rd Qu</td>
-<td>Max</td>
+<td style="text-align: left;"><em>yards_gained</em></td>
+<td style="text-align: center;">47</td>
+<td style="text-align: center;">290</td>
+<td style="text-align: center;">348</td>
+<td style="text-align: center;">344.1</td>
+<td style="text-align: center;">399</td>
+<td style="text-align: center;">571</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Variable</td>
-<td>Min</td>
-<td>1st Qu</td>
-<td>Median</td>
-<td>Mean</td>
-<td>3rd Qu</td>
-<td>Max</td>
+<td style="text-align: left;"><em>shotgun_snaps</em></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">34</td>
+<td style="text-align: center;">42</td>
+<td style="text-align: center;">43.38</td>
+<td style="text-align: center;">52</td>
+<td style="text-align: center;">91</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><em>no_huddle_snap</em></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">7.05</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">50</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><em>epa_per_play</em></td>
+<td style="text-align: center;">-0.84</td>
+<td style="text-align: center;">-0.12</td>
+<td style="text-align: center;">0.02</td>
+<td style="text-align: center;">0.008</td>
+<td style="text-align: center;">0.14</td>
+<td style="text-align: center;">0.72</td>
 </tr>
 </tbody>
 </table>
@@ -468,87 +429,87 @@ Y ∼ N(Xβ + o, σ^2 W^{-1})
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plotting offensive vs defensive EPA per play</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>offense <span class="ot">&lt;-</span> pbp <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(<span class="at">team =</span> posteam) <span class="sc">%&gt;%</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">off_epa =</span> <span class="fu">mean</span>(epa, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>defense <span class="ot">&lt;-</span> pbp <span class="sc">%&gt;%</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(<span class="at">team =</span> defteam) <span class="sc">%&gt;%</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">def_epa =</span> <span class="fu">mean</span>(epa, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>offense <span class="sc">%&gt;%</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(defense, <span class="at">by =</span> <span class="st">"team"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> off_epa, <span class="at">y =</span> def_epa)) <span class="sc">+</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="sc">-</span><span class="fl">1.5</span>, <span class="at">intercept =</span> <span class="fu">c</span>(.<span class="dv">4</span>, .<span class="dv">3</span>, .<span class="dv">2</span>, .<span class="dv">1</span>, <span class="dv">0</span>, <span class="sc">-</span>.<span class="dv">1</span>, <span class="sc">-</span>.<span class="dv">2</span>, <span class="sc">-</span>.<span class="dv">3</span>), <span class="at">alpha =</span> .<span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  nflplotR<span class="sc">::</span><span class="fu">geom_mean_lines</span>(<span class="fu">aes</span>(<span class="at">h_var =</span> off_epa, <span class="at">v_var =</span> def_epa)) <span class="sc">+</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  nflplotR<span class="sc">::</span><span class="fu">geom_nfl_logos</span>(<span class="fu">aes</span>(<span class="at">team_abbr =</span> team), <span class="at">width =</span> <span class="fl">0.07</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Offense EPA/play"</span>,</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Defense EPA/play"</span>,</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"2021 NFL Offensive and Defensive EPA per Play"</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">"bold"</span>)</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_y_reverse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plotting offensive vs defensive EPA per play</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>offense <span class="ot">&lt;-</span> pbp <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(<span class="at">team =</span> posteam) <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">off_epa =</span> <span class="fu">mean</span>(epa, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>defense <span class="ot">&lt;-</span> pbp <span class="sc">%&gt;%</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(<span class="at">team =</span> defteam) <span class="sc">%&gt;%</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">def_epa =</span> <span class="fu">mean</span>(epa, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>offense <span class="sc">%&gt;%</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(defense, <span class="at">by =</span> <span class="st">"team"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> off_epa, <span class="at">y =</span> def_epa)) <span class="sc">+</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="sc">-</span><span class="fl">1.5</span>, <span class="at">intercept =</span> <span class="fu">c</span>(.<span class="dv">4</span>, .<span class="dv">3</span>, .<span class="dv">2</span>, .<span class="dv">1</span>, <span class="dv">0</span>, <span class="sc">-</span>.<span class="dv">1</span>, <span class="sc">-</span>.<span class="dv">2</span>, <span class="sc">-</span>.<span class="dv">3</span>), <span class="at">alpha =</span> .<span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  nflplotR<span class="sc">::</span><span class="fu">geom_mean_lines</span>(<span class="fu">aes</span>(<span class="at">h_var =</span> off_epa, <span class="at">v_var =</span> def_epa)) <span class="sc">+</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  nflplotR<span class="sc">::</span><span class="fu">geom_nfl_logos</span>(<span class="fu">aes</span>(<span class="at">team_abbr =</span> team), <span class="at">width =</span> <span class="fl">0.07</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Offense EPA/play"</span>,</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Defense EPA/play"</span>,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"2021 NFL Offensive and Defensive EPA per Play"</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">"bold"</span>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_y_reverse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The second set of plots shows us the EPA by coach. We can see that there is a difference in expected points per play based on the coach.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare EPA by coach</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(team_sum2, <span class="fu">aes</span>(epa_per_play)) <span class="sc">+</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> coach) <span class="sc">+</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare EPA by coach</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(team_sum2, <span class="fu">aes</span>(epa_per_play)) <span class="sc">+</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> coach) <span class="sc">+</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>This third set of plots models each of our features against our EPA to see if any patterns exist.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot each variable against epa to see if any patterns exist </span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(team_sum2, <span class="fu">aes</span>(<span class="at">x=</span>pass_pct, <span class="at">y=</span>epa_per_play)) <span class="sc">+</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(team_sum2,<span class="fu">aes</span>(<span class="at">x=</span>week, <span class="at">y=</span>epa_per_play)) <span class="sc">+</span> </span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(team_sum2, <span class="fu">aes</span>(<span class="at">x=</span>plays, <span class="at">y=</span>epa_per_play)) <span class="sc">+</span> </span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> team_sum2 <span class="sc">|&gt;</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y=</span>epa_per_play, <span class="at">x=</span>yards_gained)) <span class="sc">+</span> </span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>)</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>p5 <span class="ot">&lt;-</span> team_sum2 <span class="sc">|&gt;</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y=</span>epa_per_play, <span class="at">x=</span>shotgun_snaps)) <span class="sc">+</span> </span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>)</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>p6 <span class="ot">&lt;-</span> team_sum2 <span class="sc">|&gt;</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y=</span>epa_per_play, <span class="at">x=</span>no_huddle_snap)) <span class="sc">+</span> </span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>)</span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>team_sum2<span class="sc">$</span>season_type <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(team_sum2<span class="sc">$</span>season_type)</span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>team_sum2<span class="sc">$</span>home_adv <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(team_sum2<span class="sc">$</span>home_adv)</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>p7 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(team_sum2,<span class="fu">aes</span>(<span class="at">x=</span>season_type, <span class="at">y=</span>epa_per_play)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>()</span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>p8 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(team_sum2, <span class="fu">aes</span>(home_adv, epa_per_play)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>()</span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="co"># arrange visualizations in a grid</span></span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="fu">grid.arrange</span>(p1, p2, p3, p4, p5, p6, p7, p8)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot each variable against epa to see if any patterns exist </span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(team_sum2, <span class="fu">aes</span>(<span class="at">x=</span>pass_pct, <span class="at">y=</span>epa_per_play)) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(team_sum2,<span class="fu">aes</span>(<span class="at">x=</span>week, <span class="at">y=</span>epa_per_play)) <span class="sc">+</span> </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(team_sum2, <span class="fu">aes</span>(<span class="at">x=</span>plays, <span class="at">y=</span>epa_per_play)) <span class="sc">+</span> </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> team_sum2 <span class="sc">|&gt;</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y=</span>epa_per_play, <span class="at">x=</span>yards_gained)) <span class="sc">+</span> </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>p5 <span class="ot">&lt;-</span> team_sum2 <span class="sc">|&gt;</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y=</span>epa_per_play, <span class="at">x=</span>shotgun_snaps)) <span class="sc">+</span> </span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>p6 <span class="ot">&lt;-</span> team_sum2 <span class="sc">|&gt;</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y=</span>epa_per_play, <span class="at">x=</span>no_huddle_snap)) <span class="sc">+</span> </span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>team_sum2<span class="sc">$</span>season_type <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(team_sum2<span class="sc">$</span>season_type)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>team_sum2<span class="sc">$</span>home_adv <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(team_sum2<span class="sc">$</span>home_adv)</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>p7 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(team_sum2,<span class="fu">aes</span>(<span class="at">x=</span>season_type, <span class="at">y=</span>epa_per_play)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>()</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>p8 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(team_sum2, <span class="fu">aes</span>(home_adv, epa_per_play)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>()</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="co"># arrange visualizations in a grid</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="fu">grid.arrange</span>(p1, p2, p3, p4, p5, p6, p7, p8)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -558,9 +519,9 @@ Y ∼ N(Xβ + o, σ^2 W^{-1})
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create linear model to test assumptions</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>epa.lm <span class="ot">=</span> <span class="fu">lm</span>(epa_per_play <span class="sc">~</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> shotgun_snaps <span class="sc">+</span> no_huddle_snap, <span class="at">data=</span>team_sum2)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(epa.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create linear model to test assumptions</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>epa.lm <span class="ot">=</span> <span class="fu">lm</span>(epa_per_play <span class="sc">~</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> shotgun_snaps <span class="sc">+</span> no_huddle_snap, <span class="at">data=</span>team_sum2)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(epa.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -593,21 +554,21 @@ F-statistic: 180.7 on 5 and 530 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(epa.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(epa.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>While there are a few outliers present, we concluded that the overall fit for the selected variables is acceptable. We now want to account for a team’s coach and if a team has home field advantage as random effects.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># LMM - random intercepts</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>epa.lmer1 <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> no_huddle_snap <span class="sc">+</span> </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>(<span class="dv">1</span><span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>home_adv), <span class="at">data=</span>team_sum2)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>epa.lmer1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># LMM - random intercepts</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>epa.lmer1 <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> no_huddle_snap <span class="sc">+</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>(<span class="dv">1</span><span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>home_adv), <span class="at">data=</span>team_sum2)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>epa.lmer1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML ['lmerModLmerTest']
@@ -631,7 +592,7 @@ optimizer (nloptwrap) convergence code: 0 (OK) ; 0 optimizer warnings; 1 lme4 wa
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(epa.lmer1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(epa.lmer1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>$coach
@@ -684,11 +645,11 @@ attr(,"class")
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># LMM - random slopes</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>epa.lmer2 <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> shotgun_snaps <span class="sc">+</span> no_huddle_snap <span class="sc">+</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>(<span class="dv">1</span><span class="sc">+</span>pass_pct<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>plays<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>yards_gained<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>shotgun_snaps<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>no_huddle_snap<span class="sc">|</span>coach), <span class="at">data=</span>team_sum2)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(epa.lmer2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># LMM - random slopes</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>epa.lmer2 <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> shotgun_snaps <span class="sc">+</span> no_huddle_snap <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>(<span class="dv">1</span><span class="sc">+</span>pass_pct<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>plays<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>yards_gained<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>shotgun_snaps<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>no_huddle_snap<span class="sc">|</span>coach), <span class="at">data=</span>team_sum2)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(epa.lmer2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>$coach
@@ -771,16 +732,16 @@ attr(,"class")
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Testing for significance between models with and without home field advantage</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>epa.lmer2.null <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> shotgun_snaps <span class="sc">+</span> no_huddle_snap <span class="sc">+</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                  (<span class="dv">1</span><span class="sc">+</span>pass_pct<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>plays<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>yards_gained<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>shotgun_snaps<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>no_huddle_snap<span class="sc">|</span>coach),                                            <span class="at">data=</span>team_sum2,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">REML=</span><span class="cn">FALSE</span>)</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>epa.lmer2.full <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> home_adv <span class="sc">+</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> shotgun_snaps <span class="sc">+</span> no_huddle_snap <span class="sc">+</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>                  (<span class="dv">1</span><span class="sc">+</span>home_adv<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>pass_pct<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>plays<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>yards_gained<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>shotgun_snaps<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>no_huddle_snap<span class="sc">|</span>coach),                       <span class="at">data=</span>team_sum2,</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">REML=</span><span class="cn">FALSE</span>)</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(epa.lmer2.full, epa.lmer2.null)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Testing for significance between models with and without home field advantage</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>epa.lmer2.null <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> shotgun_snaps <span class="sc">+</span> no_huddle_snap <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                  (<span class="dv">1</span><span class="sc">+</span>pass_pct<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>plays<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>yards_gained<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>shotgun_snaps<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>no_huddle_snap<span class="sc">|</span>coach),                                            <span class="at">data=</span>team_sum2,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">REML=</span><span class="cn">FALSE</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>epa.lmer2.full <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> home_adv <span class="sc">+</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span> yards_gained <span class="sc">+</span> shotgun_snaps <span class="sc">+</span> no_huddle_snap <span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                  (<span class="dv">1</span><span class="sc">+</span>home_adv<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>pass_pct<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>plays<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>yards_gained<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>shotgun_snaps<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>no_huddle_snap<span class="sc">|</span>coach),                       <span class="at">data=</span>team_sum2,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">REML=</span><span class="cn">FALSE</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(epa.lmer2.full, epa.lmer2.null)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Data: team_sum2
@@ -796,101 +757,89 @@ epa.lmer2.full   26 -663.43 -552.04 357.72  -715.43 2.4394  4     0.6555</code><
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>team_sum2f <span class="ot">&lt;-</span> team_sum2 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(season_type<span class="sc">==</span><span class="dv">0</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>epa.lmer2f <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>(<span class="dv">1</span><span class="sc">+</span>pass_pct<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>plays<span class="sc">|</span>coach), <span class="at">data=</span>team_sum2f)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>team_sum2f <span class="ot">&lt;-</span> team_sum2 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(season_type<span class="sc">==</span><span class="dv">0</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>epa.lmer2f <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span> pass_pct <span class="sc">+</span> plays <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>(<span class="dv">1</span><span class="sc">+</span>pass_pct<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>plays<span class="sc">|</span>coach), <span class="at">data=</span>team_sum2f)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>intercepts2 <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">coef</span>(epa.lmer2f)<span class="sc">$</span>coach[,<span class="dv">1</span>], <span class="at">each =</span> <span class="dv">16</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>slopes <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">coef</span>(epa.lmer2f)<span class="sc">$</span>coach[,<span class="dv">2</span>], <span class="at">each =</span> <span class="dv">16</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>model_intercept <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">fixef</span>(epa.lmer2f)[<span class="dv">1</span>])</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>model_slope <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">fixef</span>(epa.lmer2f)[<span class="dv">2</span>])</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(team_sum2f, <span class="fu">aes</span>(<span class="at">x =</span> pass_pct, <span class="at">y =</span> epa_per_play, <span class="at">color=</span>coach)) <span class="sc">+</span> </span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> model_slope, <span class="at">intercept =</span> model_intercept, </span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="st">"solid"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">slope =</span> slopes, </span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>                            <span class="at">intercept =</span> intercepts2, <span class="at">linetype =</span> coach, <span class="at">color =</span> coach), </span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">size =</span> .<span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_blank</span>(),         </span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.border =</span> <span class="fu">element_rect</span>(<span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">"right"</span>, </span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>)) <span class="sc">+</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span> (<span class="at">x =</span> <span class="st">"Pass Percent"</span>, <span class="at">y =</span> <span class="st">"Epa Per Play"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>intercepts2 <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">coef</span>(epa.lmer2f)<span class="sc">$</span>coach[,<span class="dv">1</span>], <span class="at">each =</span> <span class="dv">16</span>)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>slopes <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">coef</span>(epa.lmer2f)<span class="sc">$</span>coach[,<span class="dv">2</span>], <span class="at">each =</span> <span class="dv">16</span>)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>model_intercept <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">fixef</span>(epa.lmer2f)[<span class="dv">1</span>])</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>model_slope <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">fixef</span>(epa.lmer2f)[<span class="dv">2</span>])</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(team_sum2f, <span class="fu">aes</span>(<span class="at">x =</span> pass_pct, <span class="at">y =</span> epa_per_play, <span class="at">color=</span>coach)) <span class="sc">+</span> </span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> model_slope, <span class="at">intercept =</span> model_intercept, </span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="st">"solid"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">slope =</span> slopes, </span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>                            <span class="at">intercept =</span> intercepts2, <span class="at">linetype =</span> coach, <span class="at">color =</span> coach), </span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">size =</span> .<span class="dv">4</span>) <span class="sc">+</span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_blank</span>(),         </span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.border =</span> <span class="fu">element_rect</span>(<span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">"right"</span>, </span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>)) <span class="sc">+</span></span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span> (<span class="at">x =</span> <span class="st">"Pass Percent"</span>, <span class="at">y =</span> <span class="st">"Epa Per Play"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>slopes <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">coef</span>(epa.lmer2f)<span class="sc">$</span>coach[,<span class="dv">3</span>], <span class="at">each =</span> <span class="dv">16</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>model_slope <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">fixef</span>(epa.lmer2f)[<span class="dv">3</span>])</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(team_sum2f, <span class="fu">aes</span>(<span class="at">x =</span> plays, <span class="at">y =</span> epa_per_play, <span class="at">color=</span>coach)) <span class="sc">+</span> </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> model_slope, <span class="at">intercept =</span> model_intercept, </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="st">"solid"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">slope =</span> slopes, </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">intercept =</span> intercepts2, <span class="at">linetype =</span> coach, <span class="at">color =</span> coach), </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">size =</span> .<span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_blank</span>(),         </span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.border =</span> <span class="fu">element_rect</span>(<span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">"right"</span>, </span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>)) <span class="sc">+</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span> (<span class="at">x =</span> <span class="st">"Plays"</span>, <span class="at">y =</span> <span class="st">"Epa Per Play"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
-</div>
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>slopes <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">coef</span>(epa.lmer2f)<span class="sc">$</span>coach[,<span class="dv">3</span>], <span class="at">each =</span> <span class="dv">16</span>)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>model_slope <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">fixef</span>(epa.lmer2f)[<span class="dv">3</span>])</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(team_sum2f, <span class="fu">aes</span>(<span class="at">x =</span> plays, <span class="at">y =</span> epa_per_play, <span class="at">color=</span>coach)) <span class="sc">+</span> </span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> model_slope, <span class="at">intercept =</span> model_intercept, </span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="st">"solid"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">slope =</span> slopes, </span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">intercept =</span> intercepts2, <span class="at">linetype =</span> coach, <span class="at">color =</span> coach), </span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">size =</span> .<span class="dv">4</span>) <span class="sc">+</span></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_blank</span>(),         </span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.border =</span> <span class="fu">element_rect</span>(<span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">"right"</span>, </span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>)) <span class="sc">+</span></span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span> (<span class="at">x =</span> <span class="st">"Plays"</span>, <span class="at">y =</span> <span class="st">"Epa Per Play"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-28-2.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-26-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>epa.lmer3f <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span>  plays <span class="sc">+</span> home_adv <span class="sc">+</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>                  (<span class="dv">1</span><span class="sc">+</span>home_adv<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>plays<span class="sc">|</span>coach), <span class="at">data=</span>team_sum2f,</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">REML=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
-</div>
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>intercepts2 <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">coef</span>(epa.lmer3f)<span class="sc">$</span>coach[,<span class="dv">1</span>], <span class="at">each =</span> <span class="dv">16</span>)</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>slopes <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">coef</span>(epa.lmer3f)<span class="sc">$</span>coach[,<span class="dv">2</span>], <span class="at">each =</span> <span class="dv">16</span>)</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>model_intercept <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">fixef</span>(epa.lmer3f)[<span class="dv">1</span>])</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>model_slope <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">fixef</span>(epa.lmer3f)[<span class="dv">2</span>])</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(team_sum2f, <span class="fu">aes</span>(<span class="at">x =</span> plays, <span class="at">y =</span> epa_per_play, <span class="at">color=</span>home_adv)) <span class="sc">+</span> </span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> model_slope, <span class="at">intercept =</span> model_intercept, </span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="st">"solid"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">slope =</span> slopes, </span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>                            <span class="at">intercept =</span> intercepts2, <span class="at">linetype =</span> coach), </span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">size =</span> .<span class="dv">4</span>, <span class="at">color=</span><span class="st">"grey70"</span>) <span class="sc">+</span></span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color=</span>home_adv), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"grey70"</span>) <span class="sc">+</span> </span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> plays, <span class="at">xend =</span> plays, </span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>                   <span class="at">y =</span> epa_per_play, <span class="at">yend =</span> <span class="fu">fitted</span>(epa.lmer3f)), </span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>               ) <span class="sc">+</span></span>
-<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_blank</span>(),         </span>
-<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.border =</span> <span class="fu">element_rect</span>(<span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
-<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">"right"</span>, </span>
-<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
-<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>)) <span class="sc">+</span></span>
-<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span> (<span class="at">x =</span> <span class="st">"Plays"</span>, <span class="at">y =</span> <span class="st">"Epa Per Play"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>epa.lmer3f <span class="ot">=</span> <span class="fu">lmer</span>(epa_per_play <span class="sc">~</span>  plays <span class="sc">+</span> home_adv <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                  (<span class="dv">1</span><span class="sc">+</span>home_adv<span class="sc">|</span>coach) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">+</span>plays<span class="sc">|</span>coach), <span class="at">data=</span>team_sum2f,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">REML=</span><span class="cn">FALSE</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>intercepts2 <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">coef</span>(epa.lmer3f)<span class="sc">$</span>coach[,<span class="dv">1</span>], <span class="at">each =</span> <span class="dv">16</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>slopes <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">coef</span>(epa.lmer3f)<span class="sc">$</span>coach[,<span class="dv">2</span>], <span class="at">each =</span> <span class="dv">16</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>model_intercept <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">fixef</span>(epa.lmer3f)[<span class="dv">1</span>])</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>model_slope <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">fixef</span>(epa.lmer3f)[<span class="dv">2</span>])</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(team_sum2f, <span class="fu">aes</span>(<span class="at">x =</span> plays, <span class="at">y =</span> epa_per_play, <span class="at">color=</span>home_adv)) <span class="sc">+</span> </span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> model_slope, <span class="at">intercept =</span> model_intercept, </span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="st">"solid"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">slope =</span> slopes, </span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>                            <span class="at">intercept =</span> intercepts2, <span class="at">linetype =</span> coach), </span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">size =</span> .<span class="dv">4</span>, <span class="at">color=</span><span class="st">"grey70"</span>) <span class="sc">+</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color=</span>home_adv), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"grey70"</span>) <span class="sc">+</span> </span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> plays, <span class="at">xend =</span> plays, </span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>                   <span class="at">y =</span> epa_per_play, <span class="at">yend =</span> <span class="fu">fitted</span>(epa.lmer3f)), </span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>               ) <span class="sc">+</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_blank</span>(),         </span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.border =</span> <span class="fu">element_rect</span>(<span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">"right"</span>, </span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>)) <span class="sc">+</span></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span> (<span class="at">x =</span> <span class="st">"Plays"</span>, <span class="at">y =</span> <span class="st">"Epa Per Play"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -900,11 +849,8 @@ epa.lmer2.full   26 -663.43 -552.04 357.72  -715.43 2.4394  4     0.6555</code><
 </section>
 </section>
 <section id="sec-references" class="level2">
-
-
-</section>
-
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<h2 class="anchored" data-anchor-id="sec-references">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
 <div id="ref-barr2013random" class="csl-entry" role="doc-biblioentry">
 Barr, Dale J. 2013. <span>“Random Effects Structure for Testing Interactions in Linear Mixed-Effects Models.”</span> <em>Frontiers in Psychology</em>. Frontiers Media SA.
 </div>
@@ -930,7 +876,10 @@ Luger, Tana M, Jerry Suls, and Mark W Vander Weg. 2014. <span>“How Robust Is t
 <div id="ref-schielzeth2020robustness" class="csl-entry" role="doc-biblioentry">
 Schielzeth, Holger, Niels J Dingemanse, Shinichi Nakagawa, David F Westneat, Hassen Allegue, Céline Teplitsky, Denis Réale, Ned A Dochtermann, László Zsolt Garamszegi, and Yimen G Araya-Ajoy. 2020. <span>“Robustness of Linear Mixed-Effects Models to Violations of Distributional Assumptions.”</span> <em>Methods in Ecology and Evolution</em> 11 (9): 1141–52.
 </div>
-</div></section></div></main>
+</div>
+</section>
+
+</main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -1001,8 +950,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      let href = ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
