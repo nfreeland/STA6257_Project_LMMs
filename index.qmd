@@ -70,7 +70,7 @@ Our basic model: $$epa = plays +  (1+plays|coach)$$
 Our data featured a play by play analysis for every game in the 2021 season. We are attempting to model the coaches effect using the EPA. We first decided to aggregate the data by game and team. We are assuming that all plays are rush or pass and will be using the pass percentage (pass_pct) to model the two different play options per game. After summarizing, we end up with the following table.
 
 | Variable         | Meaning                                                                 |
-|:-----------------|:-----------------------------------------------------|
+|:------------------|:----------------------------------------------------|
 | pbp.posteam      | the team with possession of the ball (offense)                          |
 | pbp.posteam_type | specifies if the possessing team is home or away                        |
 | pbp.game_id      | the specific game id from the NFL                                       |
@@ -143,6 +143,15 @@ Here is the summary of the variables we are choosing to model coach effectivenes
 summary(team_sum2)
 
 ```
+| Variable         | Min    |   1st Qu    |   Median    |   Mean    |   3rd Qu    |   Max   |
+|:-----------------|--------|-------------|-------------|-----------|-------------|---------|
+| week         | 1.000    |   5.000    |   10.000    |   9.958    |   15.000       |   22.000      |
+| season_type              | 0.00000      |   0.00000     |   0.00000      |   0.04561      |   3rd Qu    |   1.00000     |
+| Variable         | Min    |   1st Qu    |   Median    |   Mean    |   3rd Qu    |   Max   |
+| Variable         | Min    |   1st Qu    |   Median    |   Mean    |   3rd Qu    |   Max   |
+| Variable         | Min    |   1st Qu    |   Median    |   Mean    |   3rd Qu    |   Max   |
+| Variable         | Min    |   1st Qu    |   Median    |   Mean    |   3rd Qu    |   Max   |
+| Variable         | Min    |   1st Qu    |   Median    |   Mean    |   3rd Qu    |   Max   |
 
 ### Visualization
 
