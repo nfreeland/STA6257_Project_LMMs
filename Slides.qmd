@@ -11,7 +11,8 @@ format:
 # Introduction
 
 ```{r}
-
+#| warning: false
+#| message: false
 #| include: false
 
 # loading packages 
