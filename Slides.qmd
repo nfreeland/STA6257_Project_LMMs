@@ -4,7 +4,11 @@ author: "Nick Freeland, Bernice Green, Gary Marmon"
 format:
   revealjs: 
     theme: league
+    preview-links: auto
+
 ---
+
+# Introduction
 
 ```{r}
 
@@ -52,22 +56,44 @@ team_sum2 <- team_sum1 %>%
 
 ```
 
-# Introduction
-
 ## Simple Linear Regressions
 
 -   assumes independence of observations
 
 -   slopes and intercepts measure average trends
 
-    <!-- insert pictures -->
+```{r Linear Regression, echo=FALSE, warning=FALSE}
+x <- c(9,9,7,8,7,8,4,5,5,4,6,2,1,3,3,2,1,2,1,0,2,8,10,9,7.5,6,10)
+y <- c(0,1,0,2,2,1,3,4,5,4,6,5,5,6,8,7,7,8,9,9,9,5,3,4,0,0,4)
+z <- c('A','A','A','A','A','A','B','B','B','B','B','B','B','B','C','C','C','C','C','C','C','A','A','A','A','A','A')
+
+
+data <- data.frame(x,y,z)
+
+slr <- ggplot(data, aes(x, y)) + 
+    geom_point(size=4) + # change size and colour
+   scale_y_continuous(limits = c(0, 10), breaks = c(0, 2, 4, 6, 8, 10)) + # y axis limits/range (0, 100), break points
+    scale_x_continuous(limits = c(0, 10), breaks = c(0, 2, 4, 6, 8, 10)) + # x axis limits/range 
+    geom_smooth(method = 'lm', se = F) # fit linear regression line
+
+slr
+```
 
 # But...
 
-What if the observations are not independent? 
+What if the observations are not independent?
 
+What if trends vary between clusters?
 
-What if trends vary between clusters? 
+```{r}
+slr.col <- ggplot(data, aes(x, y, col = z)) + 
+    geom_point(size=4) + # change size and colour
+    scale_y_continuous(limits = c(0, 10), breaks = c(0, 2, 4, 6, 8, 10)) + # y axis limits/range (0, 100), break points
+    scale_x_continuous(limits = c(0, 10), breaks = c(0, 2, 4, 6, 8, 10)) + # x axis limits/range 
+    geom_smooth(method = 'lm', se = F, aes(group = 1)) # fit linear regression line
+
+slr.col
+```
 
 ## Linear Mixed-Effects Models (LMMs)
 
@@ -78,36 +104,58 @@ What if trends vary between clusters?
 
 Main application for mixed-effect models is in psychology due to the nature of their data and repeated observations across trial participants
 
+```{r}
+lmm <- ggplot(data, aes(x, y, col = z)) + 
+    geom_point(size=4) + # change size and colour
+    scale_y_continuous(limits = c(0, 10), breaks = c(0, 2, 4, 6, 8, 10)) + # y axis limits/range (0, 100), break points
+    scale_x_continuous(limits = c(0, 10), breaks = c(0, 2, 4, 6, 8, 10)) + # x axis limits/range 
+    geom_smooth(method = 'lm', se = F)  # fit linear regression line
+
+lmm
+```
+
 ## Fixed vs. Random Effects
 
--   Fixed effects show average trends for the population
--   Random effects show how trends vary across groups
-    -   explains error due to differences between groups
+-Fixed Effects 
+  -   show average trends for the population
+  -   assume constant relationship between response and exploratory features
+  -   infer/predict about levels included in the training data
 
-<!-- include examples of fixed and random effects -->
+. . .
+
+-Random Effects 
+  -   show how trends vary across groups
+  -   assumes constant relationship between response and exploratory features but relationship may vary between groups
+  -   infer/predict about all levels in the population
 
 ## Fixed and Random Effects
 
 -   mixed-effects models simultaneously model fixed and random effects
 
 -   fixed effect parameters
+
     -   small number of clusters, large number of observations
 
 -   random effect parameters
+
     -   large number of clusters, small number of clusters per observation
 
-**It's important to include the random effects in the model since fixed effects only give a partial picture of hierarchical data**
+**It's important to include the random effects in the model since fixed effects only give a partial picture of hierarchical data.**
 
 ## Linear Model vs Linear Mixed-Effects Model
-<!-- show comparisons of sample graphs and models -->
 
-# Methods
+```{r}
+slr.lmm <- ggplot(data, aes(x, y, col = z)) + 
+    geom_point(size=4) + # change size and colour
+    scale_y_continuous(limits = c(0, 10), breaks = c(0, 2, 4, 6, 8, 10)) + # y axis limits/range (0, 100), break points
+    scale_x_continuous(limits = c(0, 10), breaks = c(0, 2, 4, 6, 8, 10)) + # x axis limits/range 
+    geom_smooth(method = 'lm', se = F) + # fit linear regression line
+    geom_smooth(method = 'lm', se = F, aes(group = 1)) # fit linear regression line
 
-##  {.scrollable}
+slr.lmm
+```
 
--   lme4 package has become the predominant tool in the R language for fitting linear mixed-effect models
--   a linear mixed model is described by the distribution of two vector-valued random variables: $Y$, the response, and $\beta$, the vector of random effects
--   Our basic model: $$epa = plays +  (1+plays|coach)$$
+# [Methods and Data](https://nfreeland.github.io/linear-mixed-effect-models-slides.html#(1)){preview-link="true"}
 
 # Data
 
@@ -116,7 +164,7 @@ Main application for mixed-effect models is in psychology due to the nature of t
 Our data featured a play by play analysis for every game in the 2021 season.
 
 | Variable         | Meaning                                                                 |
-|:-------------------|:---------------------------------------------------|
+|:--------------------|:--------------------------------------------------|
 | pbp.posteam      | the team with possession of the ball (offense)                          |
 | pbp.posteam_type | specifies if the possessing team is home or away                        |
 | pbp.game_id      | the specific game id from the NFL                                       |

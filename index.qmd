@@ -70,7 +70,7 @@ Our basic model: $$epa = plays +  (1+plays|coach)$$
 Our data featured a play by play analysis for every game in the 2021 season. We are attempting to model the coaches effect using the EPA. We first decided to aggregate the data by game and team. We are assuming that all plays are rush or pass and will be using the pass percentage (pass_pct) to model the two different play options per game. After summarizing, we end up with the following table.
 
 | Variable         | Meaning                                                                 |
-|:------------------|:----------------------------------------------------|
+|:-------------------|:---------------------------------------------------|
 | pbp.posteam      | the team with possession of the ball (offense)                          |
 | pbp.posteam_type | specifies if the possessing team is home or away                        |
 | pbp.game_id      | the specific game id from the NFL                                       |
@@ -136,22 +136,17 @@ team_sum2 <- team_sum1 %>%
 
 Here is the summary of the variables we are choosing to model coach effectiveness.
 
-```{r, warning=FALSE, echo=TRUE}
-#generate a summary of each of the features of our data set
-#replace this section with histograms (or other viz) for numerical data
-
-summary(team_sum2)
-
-```
-| Variable         | Min    |   1st Qu    |   Median    |   Mean    |   3rd Qu    |   Max   |
-|:-----------------|--------|-------------|-------------|-----------|-------------|---------|
-| week         | 1.000    |   5.000    |   10.000    |   9.958    |   15.000       |   22.000      |
-| season_type              | 0.00000      |   0.00000     |   0.00000      |   0.04561      |   3rd Qu    |   1.00000     |
-| Variable         | Min    |   1st Qu    |   Median    |   Mean    |   3rd Qu    |   Max   |
-| Variable         | Min    |   1st Qu    |   Median    |   Mean    |   3rd Qu    |   Max   |
-| Variable         | Min    |   1st Qu    |   Median    |   Mean    |   3rd Qu    |   Max   |
-| Variable         | Min    |   1st Qu    |   Median    |   Mean    |   3rd Qu    |   Max   |
-| Variable         | Min    |   1st Qu    |   Median    |   Mean    |   3rd Qu    |   Max   |
+| Variable         | Min.  | 1st Qu. | Median | Mean  | 3rd Qu. | Max. |
+|:-----------------|:-----:|:-------:|:------:|:-----:|:-------:|:----:|
+| *week*           |   1   |    5    |   10   |   9   |   15    |  22  |
+| *season_type*    |   0   |    0    |   0    | 0.045 |    0    |  1   |
+| *home_adv*       |   0   |    0    |  0.5   |  0.5  |    1    |  1   |
+| *plays*          |  42   |   59    |   65   | 65.17 |   71    |  99  |
+| *pass_plays*     |   3   |   34    |   40   | 40.44 |   46    |  71  |
+| *yards_gained*   |  47   |   290   |  348   | 344.1 |   399   | 571  |
+| *shotgun_snaps*  |   3   |   34    |   42   | 43.38 |   52    |  91  |
+| *no_huddle_snap* |   0   |    2    |   5    | 7.05  |   10    |  50  |
+| *epa_per_play*   | -0.84 |  -0.12  |  0.02  | 0.008 |  0.14   | 0.72 |
 
 ### Visualization
 
