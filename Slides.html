@@ -7,7 +7,7 @@
 <link href="Slides_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="Slides_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="Slides_files/libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.2.269">
+  <meta name="generator" content="quarto-1.0.36">
 
   <meta name="author" content="Nick Freeland, Bernice Green, Gary Marmon">
   <title>Linear Mixed-Effects Models</title>
@@ -19,15 +19,10 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -387,18 +382,11 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="quarto-title-block center">
+<section id="title-slide" class="center">
   <h1 class="title">Linear Mixed-Effects Models</h1>
-
-<div class="quarto-title-authors">
-<div class="quarto-title-author">
-<div class="quarto-title-author-name">
-Nick Freeland, Bernice Green, Gary Marmon 
-</div>
-</div>
-</div>
-
+  <p class="author">Nick Freeland, Bernice Green, Gary Marmon</p>
 </section>
+
 <section>
 <section id="introduction" class="title-slide slide level1 center">
 <h1>Introduction</h1>
@@ -456,19 +444,47 @@ Nick Freeland, Bernice Green, Gary Marmon
 <section id="linear-model-vs-linear-mixed-effects-model" class="slide level2">
 <h2>Linear Model vs Linear Mixed-Effects Model</h2>
 
-<img data-src="Slides_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"></section></section>
-<section id="methods-and-data" class="title-slide slide level1 center">
-<h1><a href="https://nfreeland.github.io/linear-mixed-effect-models-slides.html#(1)" data-preview-link="true">Methods and Data</a></h1>
-
+<img data-src="Slides_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"></section>
+<section id="overview" class="slide level2">
+<h2>Overview</h2>
+<p>Until more recently the only way to handle the type of data mixed-effects model does was through repeated measures ANOVAs. Mixed-effects models are much more versatile in handling variability within and across groups and can handle missing data, providing much better results than the ANOVAs. <span class="citation" data-cites="brown2021introduction">[@brown2021introduction]</span></p>
+<ul>
+<li>Mixed-effects models more versatile with missing data and generally better predictions</li>
+</ul>
 </section>
-
+<section id="applications" class="slide level2">
+<h2>Applications</h2>
+<p>The main application for mixed-effect models is in psychology due to the nature of their data and repeated observations across trial participants. However, the applications can extend into almost any field where the variability across a group/person is desired in the analysis. One such example is the use of mixed-effects models on published health data sets to explore the link between smoking and depression in which it was found “Smoking status is robustly associated with depression (or depressive symptomatology) at 1 ½ to 2 times the risk of nonsmoking across a variety of study designs, depression measurements, and participant populations” <span class="citation" data-cites="luger2014robust">[@luger2014robust]</span>.</p>
+<ul>
+<li>Mixed effects models: regression with variability across groups</li>
+</ul>
+</section>
+<section id="distribution-assumptions" class="slide level2 scrollable">
+<h2>Distribution Assumptions:</h2>
+<p>Just as a linear model is described by the distribution of a vector-valued random response variable, Y, whose observed value is <span class="math inline">\(y_{obs}\)</span>, a linear mixed model is described by the distribution of two vector-valued random variables: <span class="math inline">\(Y\)</span>, the response, and <span class="math inline">\(\beta\)</span>, the vector of random effects. In a linear model the distribution of Y is multivariate normal, <span class="math display">\[ Y ∼ N(Xβ + o, σ^2 W^{-1}) \]</span></p>
+</section>
+<section id="assumption-violations" class="slide level2 scrollable">
+<h2>Assumption Violations:</h2>
+<p>The complex nature of mixed-effects models call into question the robustness of these models and brings more focus to the model assumptions. “Mixed-effects models involve complex fitting procedures and make several assumptions, in particular about the distribution of residual and random effects. Violations of these assumptions are common in real datasets, yet it is not always clear how much these violations matter to accurate and unbiased estimation.” (Schielzeth et al.&nbsp;2020). The study found mixed-effects models to be very robust to violations of these assumptions, finding the estimates were unbiased and missing random effect predictors had little effect on the fixed effect estimates but had some effects on the estimates of random effects.</p>
+<ul>
+<li>Mixed-effects models offer good prediction even if assumptions on distribution are violated</li>
+</ul>
+</section></section>
 <section>
-<section id="data" class="title-slide slide level1 center">
-<h1>Data</h1>
+<section id="methods-and-data" class="title-slide slide level1 center">
+<h1>Methods and Data</h1>
 
 </section>
-<section id="section" class="slide level2 scrollable">
-<h2></h2>
+<section id="predicting-coach-preformace" class="slide level2">
+<h2>Predicting coach preformace:</h2>
+<p>Our basic model: <span class="math display">\[epa = plays +  (1+plays|coach)\]</span></p>
+<ul>
+<li>Parentheses indicate variable slopes and intercepts</li>
+<li>Other variables for consideration: pass_pct, yards_gained, no_huddle_snap, shotgun_snaps, home_adv</li>
+</ul>
+</section>
+<section id="the-data" class="slide level2 scrollable">
+<h2>The Data:</h2>
 <p>Our data featured a play by play analysis for every game in the 2021 season.</p>
 <table>
 <colgroup>
@@ -546,7 +562,7 @@ Nick Freeland, Bernice Green, Gary Marmon
 </table>
 </section>
 <section id="epa-per-play-by-coach" class="slide level2">
-<h2>EPA per Play by Coach</h2>
+<h2>EPA per Play by Coach:</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Compare EPA by coach</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="fu">ggplot</span>(team_sum2, <span class="fu">aes</span>(epa_per_play)) <span class="sc">+</span></span>
@@ -555,19 +571,31 @@ Nick Freeland, Bernice Green, Gary Marmon
 <span id="cb1-5"><a href="#cb1-5"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="Slides_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"></section></section>
-<section>
-<section id="methodology" class="title-slide slide level1 center">
-<h1>Methodology</h1>
+<img data-src="Slides_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"></section>
+<section id="team-epa-performance" class="slide level2">
+<h2>Team Epa Performance:</h2>
 
-</section>
-<section id="section-1" class="slide level2 scrollable">
-<h2></h2>
-<p>Just as a linear model is described by the distribution of a vector-valued random response variable, Y, whose observed value is <span class="math inline">\(y_{obs}\)</span>, a linear mixed model is described by the distribution of two vector-valued random variables: <span class="math inline">\(Y\)</span>, the response, and <span class="math inline">\(\beta\)</span>, the vector of random effects. In a linear model the distribution of Y is multivariate normal,</p>
-<p><span class="math display">\[
-Y ∼ N(Xβ + o, σ^2 W^{-1})
-\]</span> Our basic model: <span class="math display">\[epa = plays + (1+plays|coach)\]</span></p>
-</section>
+<img data-src="Slides_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"></section>
+<section id="plays" class="slide level2">
+<h2>Plays:</h2>
+
+<img data-src="Slides_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"></section>
+<section id="pass-pct" class="slide level2">
+<h2>Pass Pct:</h2>
+
+<img data-src="Slides_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section>
+<section id="yards-gained" class="slide level2">
+<h2>Yards Gained:</h2>
+
+<img data-src="Slides_files/figure-revealjs/unnamed-chunk-9-1.png" width="960" class="r-stretch"></section>
+<section id="shotgun-snaps" class="slide level2">
+<h2>Shotgun Snaps:</h2>
+
+<img data-src="Slides_files/figure-revealjs/unnamed-chunk-10-1.png" width="960" class="r-stretch"></section>
+<section id="no-huddle" class="slide level2">
+<h2>No Huddle:</h2>
+
+<img data-src="Slides_files/figure-revealjs/unnamed-chunk-11-1.png" width="960" class="r-stretch"></section>
 <section id="starting-with-a-simple-linear-model" class="slide level2 smaller">
 <h2>Starting with a simple linear model</h2>
 <div class="cell">
@@ -612,7 +640,7 @@ F-statistic: 180.7 on 5 and 530 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">autoplot</span>(epa.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="Slides_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"><ul>
+<img data-src="Slides_files/figure-revealjs/unnamed-chunk-13-1.png" width="960" class="r-stretch"><ul>
 <li>a few outliers are present, but the overall fit looks acceptable.</li>
 <li>we will move forward with a linear approach</li>
 </ul>
@@ -1081,15 +1109,12 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
       // slide changes (different for each slide format).
       (function () {
-        // dispatch for htmlwidgets
-        function fireSlideEnter() {
+        function fireSlideChanged(previousSlide, currentSlide) {
+
+          // dispatch for htmlwidgets
           const event = window.document.createEvent("Event");
           event.initEvent("slideenter", true, true);
           window.document.dispatchEvent(event);
-        }
-
-        function fireSlideChanged(previousSlide, currentSlide) {
-          fireSlideEnter();
 
           // dispatch for shiny
           if (window.jQuery) {
@@ -1100,6 +1125,13 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
               window.jQuery(currentSlide).trigger("shown");
             }
           }
+        }
+
+        // hookup for reveal
+        if (window.Reveal) {
+          window.Reveal.addEventListener("slidechanged", function(event) {
+            fireSlideChanged(event.previousSlide, event.currentSlide);
+          });
         }
 
         // hookup for slidy
@@ -1151,24 +1183,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
         button.classList.add('code-copy-button-checked');
         var currentTitle = button.getAttribute("title");
         button.setAttribute("title", "Copied!");
-        let tooltip;
-        if (window.bootstrap) {
-          button.setAttribute("data-bs-toggle", "tooltip");
-          button.setAttribute("data-bs-placement", "left");
-          button.setAttribute("data-bs-title", "Copied!");
-          tooltip = new bootstrap.Tooltip(button, 
-            { trigger: "manual", 
-              customClass: "code-copy-button-tooltip",
-              offset: [0, -8]});
-          tooltip.show();    
-        }
         setTimeout(function() {
-          if (tooltip) {
-            tooltip.hide();
-            button.removeAttribute("data-bs-title");
-            button.removeAttribute("data-bs-toggle");
-            button.removeAttribute("data-bs-placement");
-          }
           button.setAttribute("title", currentTitle);
           button.classList.remove('code-copy-button-checked');
         }, 1000);
@@ -1198,50 +1213,31 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
       for (var i=0; i<noterefs.length; i++) {
         const ref = noterefs[i];
         tippyHover(ref, function() {
-          // use id or data attribute instead here
-          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          let href = ref.getAttribute('href');
           try { href = new URL(href).hash; } catch {}
           const id = href.replace(/^#\/?/, "");
           const note = window.document.getElementById(id);
           return note.innerHTML;
         });
       }
-      const findCites = (el) => {
-        const parentEl = el.parentElement;
-        if (parentEl) {
-          const cites = parentEl.dataset.cites;
-          if (cites) {
-            return {
-              el,
-              cites: cites.split(' ')
-            };
-          } else {
-            return findCites(el.parentElement)
-          }
-        } else {
-          return undefined;
-        }
-      };
       var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
       for (var i=0; i<bibliorefs.length; i++) {
         const ref = bibliorefs[i];
-        const citeInfo = findCites(ref);
-        if (citeInfo) {
-          tippyHover(citeInfo.el, function() {
-            var popup = window.document.createElement('div');
-            citeInfo.cites.forEach(function(cite) {
-              var citeDiv = window.document.createElement('div');
-              citeDiv.classList.add('hanging-indent');
-              citeDiv.classList.add('csl-entry');
-              var biblioDiv = window.document.getElementById('ref-' + cite);
-              if (biblioDiv) {
-                citeDiv.innerHTML = biblioDiv.innerHTML;
-              }
-              popup.appendChild(citeDiv);
-            });
-            return popup.innerHTML;
+        const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+        tippyHover(ref, function() {
+          var popup = window.document.createElement('div');
+          cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
           });
-        }
+          return popup.innerHTML;
+        });
       }
     });
     </script>
