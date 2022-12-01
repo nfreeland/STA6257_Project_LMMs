@@ -154,14 +154,33 @@ slr.lmm <- ggplot(data, aes(x, y, col = z)) +
 
 slr.lmm
 ```
+## Overview {.smaller}
 
-# [Methods and Data](https://nfreeland.github.io/linear-mixed-effect-models-slides.html#(1)){preview-link="true"}
+Until more recently the only way to handle the type of data mixed-effects model does was through repeated measures ANOVAs. Mixed-effects models are much more versatile in handling variability within and across groups and can handle missing data, providing much better results than the ANOVAs. (Brown 2021)
 
-# Data
+- Mixed-effects models more versatile with missing data and generally better predictions
+
+## Applications {.smaller}
+
+The main application for mixed-effect models is in psychology due to the nature of their data and repeated observations across trial participants. However, the applications can extend into almost any field where the variability across a group/person is desired in the analysis. One such example is the use of mixed-effects models on published health data sets to explore the link between smoking and depression in which it was found “Smoking status is robustly associated with depression (or depressive symptomatology) at 1 ½ to 2 times the risk of nonsmoking across a variety of study designs, depression measurements, and participant populations” (Luger, Suls, and Vander Weg 2014).
+
+- Mixed effects models: regression with variability across groups
+
+## Assumptions {.smaller}
+
+The complex nature of mixed-effects models call into question the robustness of these models and brings more focus to the model assumptions. “Mixed-effects models involve complex fitting procedures and make several assumptions, in particular about the distribution of residual and random effects. Violations of these assumptions are common in real datasets, yet it is not always clear how much these violations matter to accurate and unbiased estimation.” (Schielzeth et al. 2020). The study found mixed-effects models to be very robust to violations of these assumptions, finding the estimates were unbiased and missing random effect predictors had little effect on the fixed effect estimates but had some effects on the estimates of random effects.
+
+- Mixed-effects models offer good prediction even if assumptions on distribution are violated
+
+# Methods and Data 
 
 ##  {.scrollable}
 
-Our data featured a play by play analysis for every game in the 2021 season.
+### Data {.smaller}
+
+- We used the nflfastR package which tracks NFL play by play data (372 variables) for every game and features models for Expected Points, Win Probability, and Completion Probability
+- We summarized the data on a per game basis and use the following variables in our modeling:
+
 
 | Variable         | Meaning                                                                 |
 |:--------------------|:--------------------------------------------------|
@@ -174,16 +193,86 @@ Our data featured a play by play analysis for every game in the 2021 season.
 | coach            | the coach of the team with possession (offensive plays)                 |
 | opp_coach        | the coach of the opposing team (defensive plays)                        |
 | plays            | total number of rush and pass plays given the team and game             |
-| pass_plays       | number of pass plays given the team and game                            |
+| pass_plays       | number of pass plays ran given the team and game                            |
 | pass_pct         | the percentage of pass plays in the game calculated by pass_plays/plays |
 | yards_gained     | yards gained by an offense                                              |
 | shotgun_snaps    | number of snaps a team lined up in a shotgun formation                  |
 | ho_huddle_snaps  | number of snaps a team used a no huddle offense                         |
-| EPA_per_play     | the mean of all pass and rush plays given team and game                 |
+| EPA_per_play     | expected points added per play (nflfastr model)
 
 ------------------------------------------------------------------------
 
-## EPA per Play by Coach
+### Expected Points Added (EPA) {.smaller}
+
+Expected points added are predicted for every play. We use this on a per play basis as our response variable
+
+```{r message=FALSE, warning=FALSE}
+offense <- pbp %>%
+  dplyr::group_by(team = posteam) %>%
+  dplyr::summarise(off_epa = mean(epa, na.rm = TRUE))
+defense <- pbp %>%
+  dplyr::group_by(team = defteam) %>%
+  dplyr::summarise(def_epa = mean(epa, na.rm = TRUE))
+offense %>%
+  dplyr::inner_join(defense, by = "team") %>%
+  ggplot2::ggplot(aes(x = off_epa, y = def_epa)) +
+  ggplot2::geom_abline(slope = -1.5, intercept = c(.4, .3, .2, .1, 0, -.1, -.2, -.3), alpha = .2) +
+  nflplotR::geom_mean_lines(aes(h_var = off_epa, v_var = def_epa)) +
+  nflplotR::geom_nfl_logos(aes(team_abbr = team), width = 0.07, alpha = 0.7) +
+  ggplot2::labs(
+    x = "Offense EPA/play",
+    y = "Defense EPA/play",
+    title = "2021 NFL Offensive and Defensive EPA per Play"
+  ) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    plot.title = ggplot2::element_text(size = 12, hjust = 0.5, face = "bold")
+  ) +
+  ggplot2::scale_y_reverse()
+```
+
+
+## Fixed Variables {.smaller}
+
+::: {.panel-tabset}
+
+### Yards Gained {.smaller}
+
+```{r warning=FALSE, echo=TRUE}
+team_sum2 |>
+  ggplot(aes(y=epa_per_play, x=yards_gained)) + 
+  geom_smooth(method = "loess")
+
+```
+
+### Shotgun Snaps {.smaller}
+
+```{r warning=FALSE, echo=TRUE}
+team_sum2 |>
+  ggplot(aes(y=epa_per_play, x=shotgun_snaps)) + 
+  geom_smooth(method = "loess")
+
+```
+
+### No Huddle Snaps {.smaller}
+ 
+```{r warning=FALSE, echo=TRUE}
+team_sum2 |>
+  ggplot(aes(y=epa_per_play, x=no_huddle_snap)) + 
+  geom_smooth(method = "loess")
+
+```
+
+:::
+
+## EPA per Play by Home Field Advantage {.smaller}
+
+```{r, warning=FALSE, echo=TRUE}
+team_sum2$home_adv <- as.factor(team_sum2$home_adv)
+ggplot(team_sum2, aes(home_adv, epa_per_play)) + geom_boxplot()
+```
+
+## EPA per Play by Coach {.smaller}
 
 ```{r, warning=FALSE, echo=TRUE}
 # Compare EPA by coach
@@ -194,16 +283,40 @@ ggplot(team_sum2, aes(epa_per_play)) +
   
 ```
 
-# Methodology
+- note the variation between coaches (our subjects)
+- we must account for this in our model (we do this by adding a random effect)
 
-##  {.scrollable}
+# Methodology  
 
-Just as a linear model is described by the distribution of a vector-valued random response variable, Y, whose observed value is $y_{obs}$, a linear mixed model is described by the distribution of two vector-valued random variables: $Y$, the response, and $\beta$, the vector of random effects. In a linear model the distribution of Y is multivariate normal,
+## Linear Mixed Models {.smaller}
+
+- Just as a linear model is described by the distribution of a vector-valued random response variable, Y, whose observed value is $y_{obs}$, a linear mixed model is described by the distribution of two vector-valued random variables: $Y$, the response, and $\beta$, the vector of random effects.
+  
+  
+## Formula {.smaller}
+
+- The linear mixed effects model is represented as:
 
 $$
-Y ∼ N(Xβ + o, σ^2 W^{-1})
+y_i = X_iβ + Z_ib_i + e_i
 $$
+- Xi is the design matrix of the fixed effects
+- β are the coefficients for the fixed effects
+- e is the error term
+- Note the second design matrix $Z_i$ and the subject specific random effects $b_i$
+  - These $b_i$ allow us to model the subject specific means and enable us to capture the marginal dependence among the observations
+
 Our basic model: $$epa = plays + (1+plays|coach)$$
+
+# Analysis
+
+## LME4 Package {.smaller}
+
+- Extension of the lmer function, which has become the predominant tool in the R language for fitting linear mixed-effect models. (Bates, Maechler & Bolker, 2012)
+- As for most model-fitting functions in R, the model is described in an lmer call by a formula, in this case including both fixed- and random-effects terms
+  -  resp ~ FEexpr + (REexpr1|factor1) + (REexpr2|factor2) + ...
+  - (REexpr1 | factor1) and (REexpr2 | factor2), determine both the random-effects model matrix
+-Each random-effects term is of the form (expr|factor). The expression expr is evaluated as a linear model formula, producing a model matrix following the same rules used in standard R modelling functions (e.g., lm or glm). The expression factor is evaluated as an R factor.
 
 
 ## Starting with a simple linear model {.smaller}
@@ -250,22 +363,35 @@ epa.lmer1 = lmer(epa_per_play ~ pass_pct + plays + yards_gained + no_huddle_snap
 
 epa.lmer1
 ```
-## Interpreting the Random Effects {.smaller}
+
+## No p-value?
+
+- Unfortunately, p-values	for	mixed	models aren’t as straightforward as	they are for the linear model.
+- While the null distributions are asymptotically normal, these distributions are not t distributed for finite size samples — nor are the corresponding null distributions of differences in scaled deviances F distributed
+
+## Statistical Significance (Liklihood Ratio Test) {.smaller}
 
 ```{r}
 #| include: true
 #| echo: true
 #| warning: false
 #| message: false
-#| 
-epa.lmer1
+
+# Testing for significance between models with and without home field advantage
+epa.lmer2.null = lmer(epa_per_play ~ pass_pct + plays + yards_gained + shotgun_snaps + no_huddle_snap +
+                  (1+pass_pct|coach) + (1+plays|coach) + (1+yards_gained|coach) + (1+shotgun_snaps|coach) + (1+no_huddle_snap|coach),                                            data=team_sum2,
+                  REML=FALSE)
+
+epa.lmer2.full = lmer(epa_per_play ~ home_adv + pass_pct + plays + yards_gained + shotgun_snaps + no_huddle_snap +
+                  (1+home_adv|coach) + (1+pass_pct|coach) + (1+plays|coach) + (1+yards_gained|coach) + (1+shotgun_snaps|coach) + (1+no_huddle_snap|coach),                       data=team_sum2,
+                  REML=FALSE)
+
+anova(epa.lmer2.full, epa.lmer2.null)
+
 ```
 
 
-- we observe the home advantage random effect approaches zero, concluding there is no additional change in epa per play due to home field advantage itself. 
-
-- we observe an additional 0.02 epa per play due to coaching  
-
+# Random Slopes vs Random Intercepts
 
 ## Random Intercept Model {.smaller}
 
@@ -292,46 +418,19 @@ epa.lmer2 = lmer(epa_per_play ~ pass_pct + plays + yards_gained + shotgun_snaps 
                 (1+pass_pct|coach) + (1+plays|coach) + (1+yards_gained|coach) + (1+shotgun_snaps|coach) + (1+no_huddle_snap|coach), data=team_sum2)
 ```
 
-- Alternatively, in a Random Slope model, each coach is allowed to have a different intercept, as well as different slopes for the effect of number of plays ran and percentage of pass plays, etc.
+- Alternatively, in a Random Slope model, each coach is allowed to have a different intercept, as well as different slopes for the effect of number of plays ran and percentage of pass plays, yards gained etc.
+- Note the only difference is the notation for the random effects. 
+- (1+pass_pct|coach) means we are telling the model to expect differing baseline levels of epa per play (the intercept represented by 1) as well as differing baseline levels of pass_pct  
 
-## Interpretation {.smaller}
+
+## Coefficients {.smaller}
 
 ```{r}
-#| include: true
-#| echo: true
-#| warning: false
-#| message: false
 coef(epa.lmer2)
 ```
+- here the model is expecting different baseline levels of plays ran, pass percentage, yards gained, etc.
+- despite the individual variation of pass_pct, all the values are negative and very close to each other. We see consistency with how often coaches throw the ball. The variation in number of shotgun snaps an offense runs is much wider.
 
-
-- Despite the individual variation of pass_pct, all the values are negative and very close to each other. 
-- We see consistency with how often coaches throw the ball. 
-- The variation in number of shotgun snaps an offense runs is much wider.
-
-
-## Testing for Significance Between Models {.smaller}
-
-```{r}
-#| include: true
-#| echo: true
-#| warning: false
-#| message: false
-
-# Testing for significance between models with and without home field advantage
-epa.lmer2.null = lmer(epa_per_play ~ pass_pct + plays + yards_gained + shotgun_snaps + no_huddle_snap +
-                  (1+pass_pct|coach) + (1+plays|coach) + (1+yards_gained|coach) + (1+shotgun_snaps|coach) + (1+no_huddle_snap|coach),                                            data=team_sum2,
-                  REML=FALSE)
-
-epa.lmer2.full = lmer(epa_per_play ~ home_adv + pass_pct + plays + yards_gained + shotgun_snaps + no_huddle_snap +
-                  (1+home_adv|coach) + (1+pass_pct|coach) + (1+plays|coach) + (1+yards_gained|coach) + (1+shotgun_snaps|coach) + (1+no_huddle_snap|coach),                       data=team_sum2,
-                  REML=FALSE)
-
-anova(epa.lmer2.full, epa.lmer2.null)
-
-```
-
-- no statistical significance between the models -the effect of home field advantage is minimal to zero
 
 ## Conclusion {.smaller}
 
