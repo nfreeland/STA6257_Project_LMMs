@@ -70,7 +70,7 @@ Our basic model: $$epa = plays +  (1+plays|coach)$$
 Our data featured a play by play analysis for every game in the 2021 season. We are attempting to model the coaches effect using the EPA. We first decided to aggregate the data by game and team. We are assuming that all plays are rush or pass and will be using the pass percentage (pass_pct) to model the two different play options per game. After summarizing, we end up with the following table.
 
 | Variable         | Meaning                                                                 |
-|:-----------------|:------------------------------------------------------------------------|
+|:----------------|:------------------------------------------------------|
 | pbp.posteam      | the team with possession of the ball (offense)                          |
 | pbp.posteam_type | specifies if the possessing team is home or away                        |
 | pbp.game_id      | the specific game id from the NFL                                       |

@@ -5,12 +5,11 @@ format:
   revealjs: 
     theme: league
     preview-links: auto
-
 ---
 
 # Introduction
 
-```{r}
+```{r message=FALSE, warning=FALSE, paged.print=TRUE}
 
 #| include: false
 
@@ -62,7 +61,7 @@ team_sum2 <- team_sum1 %>%
 
 -   slopes and intercepts measure average trends
 
-```{r Linear Regression, echo=FALSE, warning=FALSE}
+```{r Linear Regression, echo=FALSE, message=FALSE, warning=FALSE}
 x <- c(9,9,7,8,7,8,4,5,5,4,6,2,1,3,3,2,1,2,1,0,2,8,10,9,7.5,6,10)
 y <- c(0,1,0,2,2,1,3,4,5,4,6,5,5,6,8,7,7,8,9,9,9,5,3,4,0,0,4)
 z <- c('A','A','A','A','A','A','B','B','B','B','B','B','B','B','C','C','C','C','C','C','C','A','A','A','A','A','A')
@@ -85,7 +84,7 @@ What if the observations are not independent?
 
 What if trends vary between clusters?
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 slr.col <- ggplot(data, aes(x, y, col = z)) + 
     geom_point(size=4) + # change size and colour
     scale_y_continuous(limits = c(0, 10), breaks = c(0, 2, 4, 6, 8, 10)) + # y axis limits/range (0, 100), break points
@@ -104,7 +103,7 @@ slr.col
 
 Main application for mixed-effect models is in psychology due to the nature of their data and repeated observations across trial participants
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 lmm <- ggplot(data, aes(x, y, col = z)) + 
     geom_point(size=4) + # change size and colour
     scale_y_continuous(limits = c(0, 10), breaks = c(0, 2, 4, 6, 8, 10)) + # y axis limits/range (0, 100), break points
@@ -144,7 +143,7 @@ lmm
 
 ## Linear Model vs Linear Mixed-Effects Model
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 slr.lmm <- ggplot(data, aes(x, y, col = z)) + 
     geom_point(size=4) + # change size and colour
     scale_y_continuous(limits = c(0, 10), breaks = c(0, 2, 4, 6, 8, 10)) + # y axis limits/range (0, 100), break points

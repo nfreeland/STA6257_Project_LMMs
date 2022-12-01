@@ -7,7 +7,7 @@
 <link href="Slides_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="Slides_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="Slides_files/libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.1.189">
+  <meta name="generator" content="quarto-1.2.269">
 
   <meta name="author" content="Nick Freeland, Bernice Green, Gary Marmon">
   <title>Linear Mixed-Effects Models</title>
@@ -387,15 +387,22 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="center">
+<section id="title-slide" class="quarto-title-block center">
   <h1 class="title">Linear Mixed-Effects Models</h1>
-  <p class="author">Nick Freeland, Bernice Green, Gary Marmon</p>
-</section>
 
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Nick Freeland, Bernice Green, Gary Marmon 
+</div>
+</div>
+</div>
+
+</section>
 <section>
 <section id="introduction" class="title-slide slide level1 center">
 <h1>Introduction</h1>
-<div class="cell">
+<div class="cell" data-paged.print="true">
 
 </div>
 </section>
@@ -413,7 +420,7 @@
 <p>What if the observations are not independent?</p>
 <p>What if trends vary between clusters?</p>
 
-<img data-src="Slides_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"></section>
+<img data-src="Slides_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"></section>
 <section id="linear-mixed-effects-models-lmms" class="slide level2">
 <h2>Linear Mixed-Effects Models (LMMs)</h2>
 <ul>
@@ -425,7 +432,7 @@
 </ul>
 <p>Main application for mixed-effect models is in psychology due to the nature of their data and repeated observations across trial participants</p>
 
-<img data-src="Slides_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"></section>
+<img data-src="Slides_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section>
 <section id="fixed-vs.-random-effects" class="slide level2">
 <h2>Fixed vs.&nbsp;Random Effects</h2>
 <p>-Fixed Effects - show average trends for the population - assume constant relationship between response and exploratory features - infer/predict about levels included in the training data</p>
@@ -451,7 +458,7 @@
 <section id="linear-model-vs-linear-mixed-effects-model" class="slide level2">
 <h2>Linear Model vs Linear Mixed-Effects Model</h2>
 
-<img data-src="Slides_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section></section>
+<img data-src="Slides_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"></section></section>
 <section id="methods-and-data" class="title-slide slide level1 center">
 <h1><a href="https://nfreeland.github.io/linear-mixed-effect-models-slides.html#(1)" data-preview-link="true">Methods and Data</a></h1>
 
@@ -550,7 +557,7 @@
 <span id="cb1-5"><a href="#cb1-5"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="Slides_files/figure-revealjs/unnamed-chunk-10-1.png" width="960" class="r-stretch"></section></section>
+<img data-src="Slides_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"></section></section>
 <section>
 <section id="analysis" class="title-slide slide level1 center">
 <h1>Analysis</h1>
@@ -617,9 +624,11 @@ optimizer (nloptwrap) convergence code: 0 (OK) ; 0 optimizer warnings; 1 lme4 wa
 Models:
 epa.lmer2.null: epa_per_play ~ pass_pct + plays + yards_gained + shotgun_snaps + no_huddle_snap + (1 + pass_pct | coach) + (1 + plays | coach) + (1 + yards_gained | coach) + (1 + shotgun_snaps | coach) + (1 + no_huddle_snap | coach)
 epa.lmer2.full: epa_per_play ~ home_adv + pass_pct + plays + yards_gained + shotgun_snaps + no_huddle_snap + (1 + home_adv | coach) + (1 + pass_pct | coach) + (1 + plays | coach) + (1 + yards_gained | coach) + (1 + shotgun_snaps | coach) + (1 + no_huddle_snap | coach)
-               npar     AIC     BIC logLik deviance  Chisq Df Pr(&gt;Chisq)
-epa.lmer2.null   22 -668.99 -574.74 356.50  -712.99                     
-epa.lmer2.full   26 -663.43 -552.04 357.72  -715.43 2.4394  4     0.6555</code></pre>
+               npar     AIC     BIC logLik deviance Chisq Df Pr(&gt;Chisq)   
+epa.lmer2.null   22 -660.21 -565.96 352.11  -704.21                       
+epa.lmer2.full   26 -666.02 -554.63 359.01  -718.02  13.8  4   0.007961 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 <ul>
@@ -850,12 +859,15 @@ epa.lmer2.full   26 -663.43 -552.04 357.72  -715.43 2.4394  4     0.6555</code><
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
       // slide changes (different for each slide format).
       (function () {
-        function fireSlideChanged(previousSlide, currentSlide) {
-
-          // dispatch for htmlwidgets
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
           const event = window.document.createEvent("Event");
           event.initEvent("slideenter", true, true);
           window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
 
           // dispatch for shiny
           if (window.jQuery) {
@@ -866,13 +878,6 @@ epa.lmer2.full   26 -663.43 -552.04 357.72  -715.43 2.4394  4     0.6555</code><
               window.jQuery(currentSlide).trigger("shown");
             }
           }
-        }
-
-        // hookup for reveal
-        if (window.Reveal) {
-          window.Reveal.addEventListener("slidechanged", function(event) {
-            fireSlideChanged(event.previousSlide, event.currentSlide);
-          });
         }
 
         // hookup for slidy
@@ -924,7 +929,24 @@ epa.lmer2.full   26 -663.43 -552.04 357.72  -715.43 2.4394  4     0.6555</code><
         button.classList.add('code-copy-button-checked');
         var currentTitle = button.getAttribute("title");
         button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
         setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
           button.setAttribute("title", currentTitle);
           button.classList.remove('code-copy-button-checked');
         }, 1000);
@@ -962,24 +984,42 @@ epa.lmer2.full   26 -663.43 -552.04 357.72  -715.43 2.4394  4     0.6555</code><
           return note.innerHTML;
         });
       }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
       var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
       for (var i=0; i<bibliorefs.length; i++) {
         const ref = bibliorefs[i];
-        const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-        tippyHover(ref, function() {
-          var popup = window.document.createElement('div');
-          cites.forEach(function(cite) {
-            var citeDiv = window.document.createElement('div');
-            citeDiv.classList.add('hanging-indent');
-            citeDiv.classList.add('csl-entry');
-            var biblioDiv = window.document.getElementById('ref-' + cite);
-            if (biblioDiv) {
-              citeDiv.innerHTML = biblioDiv.innerHTML;
-            }
-            popup.appendChild(citeDiv);
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
           });
-          return popup.innerHTML;
-        });
+        }
       }
     });
     </script>
