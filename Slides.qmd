@@ -156,12 +156,12 @@ slr.lmm
 ```
 
 ## Overview
-Until more recently the only way to handle the type of data mixed-effects model does was through repeated measures ANOVAs. Mixed-effects models are much more versatile in handling variability within and across groups and can handle missing data, providing much better results than the ANOVAs. [@brown2021introduction]
+Until more recently the only way to handle the type of data mixed-effects model does was through repeated measures ANOVAs. Mixed-effects models are much more versatile in handling variability within and across groups and can handle missing data, providing much better results than the ANOVAs. (Brown 2021)
 
 - Mixed-effects models more versatile with missing data and generally better predictions
 
 ## Applications
-The main application for mixed-effect models is in psychology due to the nature of their data and repeated observations across trial participants. However, the applications can extend into almost any field where the variability across a group/person is desired in the analysis. One such example is the use of mixed-effects models on published health data sets to explore the link between smoking and depression in which it was found “Smoking status is robustly associated with depression (or depressive symptomatology) at 1 ½ to 2 times the risk of nonsmoking across a variety of study designs, depression measurements, and participant populations” [@luger2014robust].
+The main application for mixed-effect models is in psychology due to the nature of their data and repeated observations across trial participants. However, the applications can extend into almost any field where the variability across a group/person is desired in the analysis. One such example is the use of mixed-effects models on published health data sets to explore the link between smoking and depression in which it was found “Smoking status is robustly associated with depression (or depressive symptomatology) at 1 ½ to 2 times the risk of nonsmoking across a variety of study designs, depression measurements, and participant populations” (Luger 2014).
 
 - Mixed effects models: regression with variability across groups
 
