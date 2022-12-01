@@ -15,7 +15,7 @@ link-citations: yes
 always_allow_html: true # this allows to get PDF with HTML features
 ---
 
-[Link to presentation](https://beg18uwf.github.io/STA6257_Project_LMMs/Slides)
+[Link to presentation](Slides.html)
 
 ## Introduction
 
@@ -134,7 +134,7 @@ team_sum2 <- team_sum1 %>%
 
 ```
 
-Here is the summary of the variables we are choosing to model coach effectiveness.
+Below is the summary of the variables we are choosing to model coach effectiveness.
 
 | Variable         | Min.  | 1st Qu. | Median | Mean  | 3rd Qu. | Max. |
 |:-----------------|:-----:|:-------:|:------:|:-----:|:-------:|:----:|
@@ -191,7 +191,7 @@ ggplot(team_sum2, aes(epa_per_play)) +
 
 This third set of plots models each of our features against our EPA to see if any patterns exist.
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 #| warning: false
 
 # plot each variable against epa to see if any patterns exist 
@@ -237,7 +237,7 @@ library(lmerTest)
 
 We begin modeling by testing our assumptions using a linear model.
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 # create linear model to test assumptions
 epa.lm = lm(epa_per_play ~ pass_pct + plays + yards_gained + shotgun_snaps + no_huddle_snap, data=team_sum2)
 summary(epa.lm)
@@ -245,7 +245,7 @@ summary(epa.lm)
 
 We found that the number of shotgun snaps an offense runs does not appear to significantly effect EPA per play. This model explains approximately 63% of the variance in EPA per play.
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 autoplot(epa.lm)
 ```
 
@@ -261,7 +261,7 @@ epa.lmer1
 
 The home advantage random effect approaches zero, so we conclude there is no additional change in EPA per play due to home field advantage itself. However, we observe an additional 0.02 EPA per play due to coaching
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 coef(epa.lmer1)
 ```
 
@@ -293,7 +293,7 @@ anova(epa.lmer2.full, epa.lmer2.null)
 
 We observe no statistical significance between the models and conclude the effect of home field advantage is minimal to zero.
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 team_sum2f <- team_sum2 %>% filter(season_type==0)
 epa.lmer2f = lmer(epa_per_play ~ pass_pct + plays +
 (1+pass_pct|coach) + (1+plays|coach), data=team_sum2f)
@@ -337,7 +337,7 @@ ggplot(team_sum2f, aes(x = plays, y = epa_per_play, color=coach)) +
   labs (x = "Plays", y = "Epa Per Play")
 ```
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 epa.lmer3f = lmer(epa_per_play ~  plays + home_adv +
                   (1+home_adv|coach) + (1+plays|coach), data=team_sum2f,
                   REML=FALSE)
